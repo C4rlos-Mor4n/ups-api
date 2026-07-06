@@ -1,119 +1,423 @@
 # UPS ExpresosApp API
 
-Backend API for UPS ExpresosApp MVP - Institutional transport management system for Universidad Politécnica Salesiana.
+Backend API para el sistema de gestión de transporte institucional de la Universidad Politécnica Salesiana. Esta API sirve como backend centralizado para la aplicación móvil (Expo) y la web administrativa (React).
 
-## Stack
+## 📋 Descripción del Proyecto
 
-- NestJS + TypeScript
-- Prisma ORM
-- PostgreSQL
-- pnpm
-- Docker Compose
+UPS ExpresosApp es una solución institucional que permite a los estudiantes de la UPS acceder a información sobre rutas de transporte, paradas, horarios y avisos en tiempo real. El sistema incluye:
 
-## Prerequisites
+- **App Móvil (Expo)**: Para que estudiantes consulten rutas, paradas, horarios y califiquen el servicio
+- **Web Administrativa (React)**: Para que administradores gestionen rutas, paradas, horarios, vehículos, conductores y avisos
+- **Backend API (NestJS)**: Este proyecto - API REST centralizada con autenticación OTP + JWT
+
+### Estado Actual
+
+✅ **Fase 1 Completada** - API lista para consumo por frontend
+- 40 endpoints implementados y documentados con Swagger
+- 92 tests unitarios pasando
+- Autenticación OTP + JWT con refresh tokens
+- Rate limiting y seguridad hardenizada
+- SMTP real con abstracción para desarrollo
+- Documentación completa para equipos frontend
+
+## 🚀 Características Principales
+
+### Autenticación y Seguridad
+- **OTP por email**: Autenticación sin contraseñas usando códigos de un solo uso
+- **JWT con refresh tokens**: Access tokens de 15min, refresh tokens de 7 días
+- **Rate limiting**: 10 req/min global, 3 req/min para endpoints de autenticación
+- **Helmet**: Headers de seguridad HTTP
+- **CORS configurable**: Restringido a dominios específicos
+- **Trust proxy**: Configurado para funcionar detrás de nginx
+
+### Gestión de Rutas
+- CRUD completo de rutas de transporte
+- Gestión de paradas con coordenadas GPS
+- Ordenamiento de paradas por ruta
+- Horarios por día de la semana y dirección
+- Estados: ACTIVE, SUSPENDED, INACTIVE
+
+### Gestión de Recursos
+- **Vehículos**: Placa, código, capacidad, estados (ACTIVE, MAINTENANCE, INACTIVE)
+- **Conductores**: Asignación a vehículos y rutas
+- **Avisos**: Publicación con fechas de vigencia y severidad (INFO, WARNING, CRITICAL)
+
+### Feedback de Viajes
+- Estudiantes pueden calificar viajes (1-5 estrellas)
+- Comentarios opcionales
+- Historial de feedbacks por usuario y ruta
+
+### Auditoría
+- Logs de todas las acciones administrativas
+- Registro de actor, acción, entidad y metadata
+
+## 🛠️ Stack Tecnológico
+
+- **Runtime**: Node.js v24.17.0+
+- **Framework**: NestJS 11.x
+- **Lenguaje**: TypeScript 5.8.3 (strict mode, zero `any`)
+- **ORM**: Prisma 6.x
+- **Base de datos**: PostgreSQL 16
+- **Package manager**: pnpm 11.8.0+
+- **Contenedores**: Docker + Docker Compose
+- **Validación**: class-validator + Zod
+- **Documentación**: Swagger/OpenAPI 3.0
+- **Tests**: Jest (92 unit tests + e2e infrastructure)
+- **Seguridad**: Helmet, @nestjs/throttler, JWT, OTP hasheado con scrypt
+
+## 📐 Arquitectura
+
+```
+ups-api/
+├── src/
+│   ├── main.ts                          # Bootstrap con Helmet y trust proxy
+│   ├── app.module.ts                    # Módulo raíz con ThrottlerModule
+│   ├── config/
+│   │   ├── env.schema.ts                # Validación Zod con SMTP y throttle
+│   │   ├── app.config.ts                # Configuración tipada
+│   │   └── swagger.config.ts            # Swagger setup
+│   ├── database/
+│   │   ├── prisma.module.ts             # Prisma global module
+│   │   └── prisma.service.ts            # Prisma client wrapper
+│   ├── common/
+│   │   ├── decorators/                  # @CurrentUser, @Roles, @Public
+│   │   ├── dto/                         # PaginationDto
+│   │   ├── filters/                     # GlobalExceptionFilter
+│   │   ├── guards/                      # JwtAuthGuard, RolesGuard
+│   │   ├── types/                       # JwtPayload, PaginationMeta
+│   │   └── utils/                       # buildPaginatedResponse
+│   └── modules/
+│       ├── auth/                        # OTP + JWT completo
+│       │   ├── dto/                     # RequestCodeDto, VerifyCodeDto, etc.
+│       │   ├── mail/                    # SMTP con abstracción
+│       │   │   ├── interfaces/          # MailProvider
+│       │   │   └── providers/           # SmtpMailProvider, DevMailProvider
+│       │   ├── strategies/              # JwtStrategy
+│       │   ├── auth.controller.ts
+│       │   ├── auth.service.ts
+│       │   └── auth.module.ts
+│       ├── health/                      # Health checks
+│       ├── users/                       # User management
+│       ├── routes/                      # Rutas + RouteStops ordering
+│       ├── stops/                       # Paradas
+│       ├── schedules/                   # Horarios
+│       ├── vehicles/                    # Vehículos
+│       ├── drivers/                     # Conductores
+│       ├── notices/                     # Avisos
+│       ├── mobile/                      # API mobile read-only
+│       ├── trip-feedback/               # Feedback de viajes
+│       └── audit-logs/                  # Auditoría
+├── prisma/
+│   ├── schema.prisma                    # 13 modelos
+│   ├── seed.ts                          # Seed script
+│   └── migrations/                      # Migraciones
+├── test/
+│   ├── e2e/                             # Tests e2e (infrastructure ready)
+│   └── helpers/                         # Helpers para tests
+├── docs/handoff/                        # Documentación para frontend
+├── docker-compose.yml                   # PostgreSQL
+├── .env.example                         # Variables de entorno
+└── DEPLOY.md                            # Guía de deploy
+```
+
+## 📊 Modelo de Datos
+
+### Entidades Principales (13 modelos)
+
+1. **User** - Usuarios del sistema (STUDENT, ADMIN, SUPER_ADMIN, DRIVER)
+2. **Session** - Sesiones activas con refresh tokens hasheados
+3. **AuthVerificationCode** - OTP hasheados con scrypt
+4. **AllowedEmailDomain** - Dominios institucionales permitidos
+5. **Route** - Rutas de transporte
+6. **Stop** - Paradas con coordenadas GPS
+7. **RouteStop** - Relación rutas-paradas con orden
+8. **Schedule** - Horarios por día de la semana
+9. **Vehicle** - Vehículos
+10. **Driver** - Conductores
+11. **Notice** - Avisos institucionales
+12. **TripFeedback** - Calificaciones de viajes
+13. **AuditLog** - Logs de auditoría
+
+## 🔌 Endpoints (40 total)
+
+### Health (2 endpoints)
+- `GET /health` - Health check básico
+- `GET /health/db` - Health check de base de datos
+
+### Auth (5 endpoints)
+- `POST /auth/request-code` - Solicitar OTP (rate limited: 3/min)
+- `POST /auth/verify-code` - Verificar OTP y obtener tokens
+- `POST /auth/refresh` - Renovar access token
+- `POST /auth/logout` - Cerrar sesión
+- `GET /auth/me` - Obtener usuario actual
+
+### Admin API (25 endpoints) - Requiere rol ADMIN o SUPER_ADMIN
+- **Routes** (5): CRUD + ordenamiento de paradas
+- **Stops** (4): CRUD con validación de coordenadas
+- **Schedules** (4): CRUD con formato HH:mm
+- **Vehicles** (4): CRUD con placa/código únicos
+- **Drivers** (4): CRUD con asignaciones
+- **Notices** (4): CRUD con fechas de publicación
+
+### Mobile API (5 endpoints) - Requiere JWT (cualquier rol autenticado)
+- `GET /mobile/routes` - Listar rutas activas
+- `GET /mobile/routes/:id` - Detalle de ruta con paradas y horarios
+- `GET /mobile/routes/:id/stops` - Paradas de ruta ordenadas
+- `GET /mobile/routes/:id/schedules` - Horarios de ruta
+- `GET /mobile/notices` - Avisos activos
+
+### Trip Feedback (3 endpoints) - Requiere JWT
+- `POST /trip-feedback` - Crear feedback (rating 1-5)
+- `GET /trip-feedback` - Listar feedbacks con filtros
+- `GET /trip-feedback/:id` - Obtener feedback
+
+**Documentación completa**: http://localhost:3000/docs (Swagger UI)
+
+## 📦 Instalación
+
+### Prerrequisitos
 
 - Node.js v24.17.0+
 - pnpm 11.8.0+
-- Docker & Docker Compose (for PostgreSQL)
+- Docker & Docker Compose
 
-## Setup
+### Pasos
 
-1. Install dependencies:
+1. **Clonar repositorio**
+```bash
+git clone https://github.com/C4rlos-Mor4n/ups-api.git
+cd ups-api
+```
 
+2. **Instalar dependencias**
 ```bash
 pnpm install
 ```
 
-2. Start PostgreSQL:
+3. **Configurar variables de entorno**
+```bash
+cp .env.example .env
+# Editar .env con tus valores
+```
 
+4. **Levantar PostgreSQL**
 ```bash
 docker compose up -d
 ```
 
-3. Apply database migrations:
+5. **Ejecutar migraciones**
+```bash
+pnpm prisma migrate deploy
+```
+
+6. **Generar Prisma Client**
+```bash
+pnpm prisma generate
+```
+
+7. **Seed de datos de prueba (opcional)**
+```bash
+pnpm prisma:seed
+```
+
+8. **Iniciar servidor de desarrollo**
+```bash
+pnpm start:dev
+```
+
+La API estará disponible en `http://localhost:3000`  
+Swagger UI en `http://localhost:3000/docs`
+
+## 🔐 Variables de Entorno
+
+Copiar `.env.example` a `.env` y ajustar:
+
+### Desarrollo
+```bash
+NODE_ENV=development
+PORT=3000
+DATABASE_URL="postgresql://ups_user:ups_password@localhost:5433/ups_expresos"
+
+JWT_ACCESS_SECRET="change-me-access-secret"
+JWT_REFRESH_SECRET="change-me-refresh-secret"
+
+ALLOWED_EMAIL_DOMAINS="ups.edu.ec,est.ups.edu.ec"
+SUPER_ADMIN_EMAILS="admin@ups.edu.ec"
+
+AUTH_DEV_EXPOSE_OTP=true  # Solo desarrollo
+SWAGGER_ENABLED=true
+```
+
+### Producción
+```bash
+NODE_ENV=production
+JWT_ACCESS_SECRET="<generar-32-caracteres-minimo>"
+JWT_REFRESH_SECRET="<generar-32-caracteres-minimo>"
+AUTH_DEV_EXPOSE_OTP=false  # SIEMPRE false
+SWAGGER_ENABLED=false
+
+# SMTP obligatorio en producción
+SMTP_HOST="smtp.ups.edu.ec"
+SMTP_PORT=587
+SMTP_USER="noreply@ups.edu.ec"
+SMTP_PASS="password"
+SMTP_FROM="noreply@ups.edu.ec"
+```
+
+Ver `.env.example` para lista completa.
+
+## 🧪 Tests
+
+### Tests Unitarios (92 tests)
+```bash
+pnpm test
+```
+
+Cobertura:
+- Auth service (12 tests)
+- Roles guard (6 tests)
+- Routes service (7 tests)
+- Route-stops service (6 tests)
+- Stops service (7 tests)
+- Mobile service (10 tests)
+- Notices service (8 tests)
+- Health (7 tests)
+- TripFeedback service (20 tests)
+- Mail service (9 tests)
+
+### Tests E2E
+```bash
+pnpm test:e2e
+```
+
+Infraestructura lista con PostgreSQL aislado (puerto 5434).
+
+### Validaciones
+```bash
+pnpm lint          # ESLint
+pnpm typecheck     # TypeScript
+pnpm build         # Build de producción
+pnpm prisma validate  # Validar schema
+```
+
+## 📚 Documentación para Frontend
+
+El paquete de handoff completo está en `docs/handoff/`:
+
+- **README.md** - Introducción al paquete
+- **AUTH_FLOW.md** - Flujo completo de autenticación OTP + JWT
+- **MOBILE_API_GUIDE.md** - Guía para app móvil (8 endpoints)
+- **WEB_ADMIN_API_GUIDE.md** - Guía para web admin (25 endpoints)
+- **ERROR_CODES.md** - Catálogo de errores HTTP
+- **FRONTEND_IMPLEMENTATION_NOTES.md** - Patrones para React y Expo
+- **API_CONTRACT_SUMMARY.md** - Tabla resumen de los 40 endpoints
+- **ups-expresosapp-openapi.json** - Especificación OpenAPI para importar en Apidog
+
+### Importar en Apidog
+
+1. Abrir Apidog
+2. Click en "Import Data"
+3. Seleccionar "OpenAPI/Swagger"
+4. Subir `docs/handoff/ups-expresosapp-openapi.json`
+5. Los 40 endpoints aparecerán organizados por tags
+
+## 🚀 Deploy
+
+Ver [DEPLOY.md](DEPLOY.md) para guía completa de despliegue.
+
+### Checklist rápido
+
+- [ ] Configurar PostgreSQL de producción
+- [ ] Configurar SMTP real
+- [ ] Generar JWT secrets seguros (32+ caracteres)
+- [ ] Configurar reverse proxy (nginx) con headers X-Forwarded-For
+- [ ] Ejecutar migraciones: `pnpm prisma migrate deploy`
+- [ ] Configurar CORS para dominios de frontend
+- [ ] Deshabilitar Swagger en producción
+
+## 📝 Scripts Disponibles
 
 ```bash
-pnpm run prisma:migrate
+# Desarrollo
+pnpm start:dev              # Servidor con hot reload
+
+# Producción
+pnpm build                  # Build para producción
+pnpm start:prod             # Ejecutar build de producción
+
+# Calidad
+pnpm lint                   # ESLint
+pnpm typecheck              # TypeScript type checking
+pnpm test                   # Tests unitarios
+pnpm test:e2e               # Tests end-to-end
+
+# Base de datos
+pnpm prisma:validate        # Validar schema
+pnpm prisma:generate        # Generar Prisma Client
+pnpm prisma:migrate         # Ejecutar migraciones
+pnpm prisma:seed            # Seed de datos
+pnpm prisma:studio          # Abrir Prisma Studio
+
+# Documentación
+pnpm export:openapi         # Exportar OpenAPI spec a JSON
 ```
 
-4. Generate Prisma client:
+## 🔒 Seguridad
 
-```bash
-pnpm run prisma:generate
-```
+### Implementada
+- ✅ OTP hasheado con scrypt (nunca en texto plano)
+- ✅ Refresh tokens hasheados con SHA-256
+- ✅ Rate limiting (10 req/min global, 3 req/min auth)
+- ✅ Helmet (headers de seguridad HTTP)
+- ✅ CORS restringido
+- ✅ Trust proxy para X-Forwarded-For
+- ✅ Validación de inputs con class-validator
+- ✅ Variables de entorno validadas con Zod
+- ✅ No uso de `any` en TypeScript (zero tolerance)
 
-5. Seed demo data:
+### Buenas prácticas
+- No guardar OTP en texto plano
+- No guardar refresh tokens en texto plano
+- No loguear tokens ni OTP
+- Rotación de refresh tokens en cada uso
+- Sesiones revocables
 
-```bash
-pnpm run prisma:seed
-```
+## 🎯 Próximos Pasos
 
-6. Start development server:
+### Fase 2 (Futuro)
+- [ ] GPS en tiempo real para unidades
+- [ ] Notificaciones push
+- [ ] ETA dinámico
+- [ ] Endpoints DELETE para soft-delete
+- [ ] Tests e2e completos
+- [ ] WebSocket para actualizaciones en tiempo real
 
-```bash
-pnpm run start:dev
-```
+### Pendientes inmediatos
+- [ ] Configurar SMTP real y probar envío de correos
+- [ ] Definir URLs de Staging y Producción
+- [ ] Ajustar tests e2e (infraestructura lista)
+- [ ] Implementar endpoints admin para TripFeedback
 
-The API will be available at `http://localhost:3000` and Swagger docs at `http://localhost:3000/docs`.
+## 📄 Licencia
 
-## Environment Variables
+Este proyecto es propiedad de la Universidad Politécnica Salesiana.
 
-Copy `.env.example` to `.env` and adjust values as needed.
+## 👥 Equipo
 
-```bash
-cp .env.example .env
-```
+- **Backend**: Carlos Morán
+- **Frontend Web**: (pendiente)
+- **App Móvil**: (pendiente)
 
-Key variables:
+## 📞 Soporte
 
-- `DATABASE_URL` - PostgreSQL connection string
-- `JWT_ACCESS_SECRET` / `JWT_REFRESH_SECRET` - JWT secrets
-- `ALLOWED_EMAIL_DOMAINS` - Comma-separated allowed institutional domains
-- `SUPER_ADMIN_EMAILS` - Comma-separated super admin emails
-- `AUTH_DEV_EXPOSE_OTP` - Exposes OTP in response for development only
+Para dudas sobre la API, consultar:
+1. Swagger UI: http://localhost:3000/docs
+2. Documentación en `docs/handoff/`
+3. OpenAPI spec: `docs/handoff/ups-expresosapp-openapi.json`
 
-## Scripts
+---
 
-- `pnpm run start:dev` - Start with hot reload
-- `pnpm run build` - Build for production
-- `pnpm run start:prod` - Run production build
-- `pnpm run lint` - Run ESLint
-- `pnpm run typecheck` - Run TypeScript type checking
-- `pnpm run test` - Run unit tests
-- `pnpm run test:e2e` - Run end-to-end tests
-- `pnpm run prisma:generate` - Generate Prisma client
-- `pnpm run prisma:migrate` - Run Prisma migrations
-- `pnpm run prisma:seed` - Seed database
-- `pnpm run prisma:studio` - Open Prisma Studio
-
-## Project Structure
-
-```
-src/
-  common/        # Shared types, DTOs, decorators, guards, filters, utils
-  config/        # App configuration and environment validation
-  database/      # Prisma module and service
-  modules/       # Feature modules
-    auth/        # OTP authentication and JWT
-    health/      # Health checks
-    users/       # User management
-prisma/
-  schema.prisma  # Database schema
-  seed.ts        # Database seed script
-```
-
-## Authentication
-
-The API uses OTP-based authentication:
-
-1. Request a verification code: `POST /auth/request-code`
-2. Verify the code: `POST /auth/verify-code`
-3. Use the returned access token as a Bearer token
-4. Refresh tokens via `POST /auth/refresh`
-
-## Notes
-
-- PostgreSQL runs on port `5433` externally to avoid conflicts with other local databases.
-- Do not enable `AUTH_DEV_EXPOSE_OTP` in production.
-- Default JWT secrets must be changed in production.
-# ups-api
+**Proyecto**: UPS ExpresosApp API  
+**Versión**: 1.0.0  
+**Última actualización**: 2026-07-05  
+**Estado**: ✅ Fase 1 completada - API lista para consumo por frontend
