@@ -1,0 +1,78 @@
+import { Controller, Get, Post, Patch, Body, Param, Query } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiCreatedResponse, ApiOkResponse, ApiParam, ApiQuery, ApiBody, ApiBearerAuth, ApiUnauthorizedResponse, ApiForbiddenResponse, ApiNotFoundResponse, ApiBadRequestResponse } from '@nestjs/swagger';
+import { UserRole } from '@prisma/client';
+import { Roles } from '../../common/decorators/roles.decorator';
+import { CurrentUser } from '../../common/decorators/current-user.decorator';
+import { PaginationDto } from '../../common/dto/pagination.dto';
+import { SchedulesService } from './schedules.service';
+import { CreateScheduleDto } from './dto/create-schedule.dto';
+import { UpdateScheduleDto } from './dto/update-schedule.dto';
+import { ScheduleResponseDto } from './dto/schedule-response.dto';
+import { SchedulePaginatedResponseDto } from './dto/schedule-paginated-response.dto';
+import { ScheduleFiltersDto } from './dto/schedule-filters.dto';
+
+@ApiBearerAuth()
+@ApiTags('Admin Schedules')
+@Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
+@Controller('admin/schedules')
+export class SchedulesController {
+  constructor(private readonly schedulesService: SchedulesService) {}
+
+  @Post()
+  @ApiOperation({ summary: 'Create a new schedule' })
+  @ApiBody({ type: CreateScheduleDto })
+  @ApiCreatedResponse({ type: ScheduleResponseDto, description: 'Schedule created successfully' })
+  @ApiBadRequestResponse({ description: 'Invalid input' })
+  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
+  @ApiForbiddenResponse({ description: 'Forbidden' })
+  create(
+    @Body() dto: CreateScheduleDto,
+    @CurrentUser('sub') actorId: string,
+  ): Promise<ScheduleResponseDto> {
+    return this.schedulesService.create(dto, actorId);
+  }
+
+  @Get()
+  @ApiOperation({ summary: 'List schedules with pagination and filters' })
+  @ApiQuery({ type: PaginationDto })
+  @ApiQuery({ type: ScheduleFiltersDto })
+  @ApiOkResponse({ type: SchedulePaginatedResponseDto, description: 'Paginated list of schedules' })
+  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
+  @ApiForbiddenResponse({ description: 'Forbidden' })
+  findAll(
+    @Query() pagination: PaginationDto,
+    @Query() filters: ScheduleFiltersDto,
+  ): Promise<SchedulePaginatedResponseDto> {
+    const page = pagination.page ?? 1;
+    const limit = pagination.limit ?? 20;
+    return this.schedulesService.findAll(page, limit, filters);
+  }
+
+  @Get(':id')
+  @ApiOperation({ summary: 'Get schedule details' })
+  @ApiParam({ name: 'id', description: 'Schedule ID', format: 'uuid' })
+  @ApiOkResponse({ type: ScheduleResponseDto, description: 'Schedule details' })
+  @ApiNotFoundResponse({ description: 'Schedule not found' })
+  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
+  @ApiForbiddenResponse({ description: 'Forbidden' })
+  findOne(@Param('id') id: string): Promise<ScheduleResponseDto> {
+    return this.schedulesService.findOne(id);
+  }
+
+  @Patch(':id')
+  @ApiOperation({ summary: 'Update a schedule' })
+  @ApiParam({ name: 'id', description: 'Schedule ID', format: 'uuid' })
+  @ApiBody({ type: UpdateScheduleDto })
+  @ApiOkResponse({ type: ScheduleResponseDto, description: 'Schedule updated successfully' })
+  @ApiBadRequestResponse({ description: 'Invalid input' })
+  @ApiNotFoundResponse({ description: 'Schedule not found' })
+  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
+  @ApiForbiddenResponse({ description: 'Forbidden' })
+  update(
+    @Param('id') id: string,
+    @Body() dto: UpdateScheduleDto,
+    @CurrentUser('sub') actorId: string,
+  ): Promise<ScheduleResponseDto> {
+    return this.schedulesService.update(id, dto, actorId);
+  }
+}

@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.env
+.env.test
+*.js.map
+*.d.ts
+!prisma/seed.ts
+coverage/
