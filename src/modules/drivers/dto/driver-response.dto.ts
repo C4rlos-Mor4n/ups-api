@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { DriverStatus } from '@prisma/client';
 
 export class DriverResponseDto {
@@ -8,20 +8,20 @@ export class DriverResponseDto {
   @ApiProperty({ example: 'Juan Pérez' })
   name!: string;
 
-  @ApiProperty({ example: '+593991234567', nullable: true })
-  phone!: string | null;
+  @ApiPropertyOptional({ type: String, nullable: true, description: 'Phone number', example: '+593999999999' })
+  phone?: string | null;
 
-  @ApiProperty({ example: 'L123456789', nullable: true })
-  licenseNumber!: string | null;
+  @ApiPropertyOptional({ type: String, nullable: true, description: 'License number', example: 'LIC-123456' })
+  licenseNumber?: string | null;
 
   @ApiProperty({ enum: DriverStatus, example: DriverStatus.ACTIVE })
   status!: DriverStatus;
 
-  @ApiProperty({ example: '550e8400-e29b-41d4-a716-446655440000', nullable: true })
-  assignedVehicleId!: string | null;
+  @ApiPropertyOptional({ type: String, nullable: true, description: 'Assigned vehicle ID', example: '550e8400-e29b-41d4-a716-446655440000' })
+  assignedVehicleId?: string | null;
 
-  @ApiProperty({ example: '550e8400-e29b-41d4-a716-446655440000', nullable: true })
-  assignedRouteId!: string | null;
+  @ApiPropertyOptional({ type: String, nullable: true, description: 'Assigned route ID', example: '550e8400-e29b-41d4-a716-446655440000' })
+  assignedRouteId?: string | null;
 
   @ApiProperty({ type: 'string', format: 'date-time' })
   createdAt!: Date;

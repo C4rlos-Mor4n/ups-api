@@ -1,5 +1,9 @@
 import { Controller, Post, Get, Body } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiOkResponse, ApiCreatedResponse, ApiBearerAuth, ApiTooManyRequestsResponse } from '@nestjs/swagger';
+import {
+  ApiTags, ApiOperation, ApiOkResponse, ApiCreatedResponse,
+  ApiBearerAuth, ApiTooManyRequestsResponse, ApiBadRequestResponse,
+  ApiUnauthorizedResponse, ApiForbiddenResponse,
+} from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
 import { AuthService } from './auth.service';
 import { Public } from '../../common/decorators/public.decorator';
@@ -20,6 +24,8 @@ export class AuthController {
   @Throttle({ default: { ttl: 60000, limit: 3 } })
   @ApiOperation({ summary: 'Request an OTP verification code' })
   @ApiCreatedResponse({ description: 'Verification code sent' })
+  @ApiBadRequestResponse({ description: 'Invalid email format' })
+  @ApiForbiddenResponse({ description: 'Email domain not allowed' })
   @ApiTooManyRequestsResponse({ description: 'Too many requests. Try again later.' })
   requestCode(@Body() dto: RequestCodeDto): Promise<{ message: string; devCode?: string }> {
     return this.authService.requestCode(dto);
@@ -29,6 +35,8 @@ export class AuthController {
   @Post('verify-code')
   @ApiOperation({ summary: 'Verify OTP and obtain access/refresh tokens' })
   @ApiCreatedResponse({ type: AuthTokensDto, description: 'Tokens generated successfully' })
+  @ApiBadRequestResponse({ description: 'Invalid email or code format' })
+  @ApiUnauthorizedResponse({ description: 'Invalid or expired code' })
   verifyCode(@Body() dto: VerifyCodeDto): Promise<AuthTokensDto> {
     return this.authService.verifyCode(dto);
   }
@@ -37,14 +45,18 @@ export class AuthController {
   @Post('refresh')
   @ApiOperation({ summary: 'Refresh access token using a refresh token' })
   @ApiCreatedResponse({ type: AuthTokensDto, description: 'Tokens refreshed successfully' })
+  @ApiBadRequestResponse({ description: 'Invalid refresh token format' })
+  @ApiUnauthorizedResponse({ description: 'Invalid or expired refresh token' })
   refresh(@Body() dto: RefreshTokenDto): Promise<AuthTokensDto> {
     return this.authService.refresh(dto);
   }
 
-  @Public()
   @Post('logout')
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Logout and revoke session' })
   @ApiOkResponse({ description: 'Logged out successfully' })
+  @ApiUnauthorizedResponse({ description: 'Invalid or missing token' })
+  @ApiBadRequestResponse({ description: 'Invalid request body' })
   logout(@Body() dto: LogoutDto): Promise<{ message: string }> {
     return this.authService.logout(dto);
   }
@@ -53,6 +65,7 @@ export class AuthController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get current authenticated user' })
   @ApiOkResponse({ type: AuthUserDto, description: 'Current user' })
+  @ApiUnauthorizedResponse({ description: 'Invalid or missing token' })
   getMe(@CurrentUser('sub') userId: string): Promise<AuthUserDto> {
     return this.authService.getMe(userId);
   }

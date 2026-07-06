@@ -1,5 +1,5 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiOkResponse, ApiParam, ApiQuery, ApiBearerAuth, ApiUnauthorizedResponse, ApiForbiddenResponse, ApiNotFoundResponse } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiOkResponse, ApiParam, ApiBearerAuth, ApiUnauthorizedResponse, ApiForbiddenResponse, ApiNotFoundResponse } from '@nestjs/swagger';
 import { UserRole } from '@prisma/client';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { PaginationDto } from '../../common/dto/pagination.dto';
@@ -21,8 +21,6 @@ export class MobileController {
 
   @Get('routes')
   @ApiOperation({ summary: 'List active routes for mobile app' })
-  @ApiQuery({ type: PaginationDto })
-  @ApiQuery({ type: MobileRouteFiltersDto })
   @ApiOkResponse({ type: RoutePaginatedResponseDto, description: 'Paginated list of active routes' })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiForbiddenResponse({ description: 'Forbidden' })
@@ -59,7 +57,6 @@ export class MobileController {
   @Get('routes/:id/schedules')
   @ApiOperation({ summary: 'Get active schedules for a route' })
   @ApiParam({ name: 'id', description: 'Route ID', format: 'uuid' })
-  @ApiQuery({ type: MobileScheduleFiltersDto })
   @ApiOkResponse({ type: [ScheduleResponseDto], description: 'Active route schedules' })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiForbiddenResponse({ description: 'Forbidden' })
@@ -72,7 +69,6 @@ export class MobileController {
 
   @Get('notices')
   @ApiOperation({ summary: 'List active notices currently published' })
-  @ApiQuery({ type: PaginationDto })
   @ApiOkResponse({ type: MobileNoticePaginatedResponseDto, description: 'Paginated list of active notices' })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiForbiddenResponse({ description: 'Forbidden' })

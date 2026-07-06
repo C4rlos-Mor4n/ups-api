@@ -49,6 +49,12 @@
           "201": {
             "description": "Verification code sent"
           },
+          "400": {
+            "description": "Invalid email format"
+          },
+          "403": {
+            "description": "Email domain not allowed"
+          },
           "429": {
             "description": "Too many requests. Try again later."
           }
@@ -83,6 +89,12 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Invalid email or code format"
+          },
+          "401": {
+            "description": "Invalid or expired code"
           }
         },
         "summary": "Verify OTP and obtain access/refresh tokens",
@@ -115,6 +127,12 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Invalid refresh token format"
+          },
+          "401": {
+            "description": "Invalid or expired refresh token"
           }
         },
         "summary": "Refresh access token using a refresh token",
@@ -140,8 +158,19 @@
         "responses": {
           "200": {
             "description": "Logged out successfully"
+          },
+          "400": {
+            "description": "Invalid request body"
+          },
+          "401": {
+            "description": "Invalid or missing token"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Logout and revoke session",
         "tags": [
           "Auth"
@@ -162,6 +191,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "description": "Invalid or missing token"
           }
         },
         "security": [
@@ -242,29 +274,6 @@
             "required": false,
             "in": "query",
             "description": "Items per page",
-            "schema": {
-              "minimum": 1,
-              "maximum": 100,
-              "default": 20,
-              "type": "number"
-            }
-          },
-          {
-            "description": "Page number (1-based)",
-            "required": false,
-            "name": "page",
-            "in": "query",
-            "schema": {
-              "minimum": 1,
-              "default": 1,
-              "type": "number"
-            }
-          },
-          {
-            "description": "Items per page",
-            "required": false,
-            "name": "limit",
-            "in": "query",
             "schema": {
               "minimum": 1,
               "maximum": 100,
@@ -530,29 +539,6 @@
               "default": 20,
               "type": "number"
             }
-          },
-          {
-            "description": "Page number (1-based)",
-            "required": false,
-            "name": "page",
-            "in": "query",
-            "schema": {
-              "minimum": 1,
-              "default": 1,
-              "type": "number"
-            }
-          },
-          {
-            "description": "Items per page",
-            "required": false,
-            "name": "limit",
-            "in": "query",
-            "schema": {
-              "minimum": 1,
-              "maximum": 100,
-              "default": 20,
-              "type": "number"
-            }
           }
         ],
         "responses": {
@@ -788,26 +774,6 @@
                 "SUNDAY"
               ]
             }
-          },
-          {
-            "description": "Filter by route ID",
-            "required": false,
-            "name": "routeId",
-            "in": "query",
-            "schema": {
-              "example": "550e8400-e29b-41d4-a716-446655440000",
-              "type": "string"
-            }
-          },
-          {
-            "description": "Filter by day of week",
-            "required": false,
-            "name": "dayOfWeek",
-            "in": "query",
-            "schema": {
-              "example": "MONDAY",
-              "type": "string"
-            }
           }
         ],
         "responses": {
@@ -1011,29 +977,6 @@
             "required": false,
             "in": "query",
             "description": "Items per page",
-            "schema": {
-              "minimum": 1,
-              "maximum": 100,
-              "default": 20,
-              "type": "number"
-            }
-          },
-          {
-            "description": "Page number (1-based)",
-            "required": false,
-            "name": "page",
-            "in": "query",
-            "schema": {
-              "minimum": 1,
-              "default": 1,
-              "type": "number"
-            }
-          },
-          {
-            "description": "Items per page",
-            "required": false,
-            "name": "limit",
-            "in": "query",
             "schema": {
               "minimum": 1,
               "maximum": 100,
@@ -1246,29 +1189,6 @@
               "default": 20,
               "type": "number"
             }
-          },
-          {
-            "description": "Page number (1-based)",
-            "required": false,
-            "name": "page",
-            "in": "query",
-            "schema": {
-              "minimum": 1,
-              "default": 1,
-              "type": "number"
-            }
-          },
-          {
-            "description": "Items per page",
-            "required": false,
-            "name": "limit",
-            "in": "query",
-            "schema": {
-              "minimum": 1,
-              "maximum": 100,
-              "default": 20,
-              "type": "number"
-            }
           }
         ],
         "responses": {
@@ -1475,29 +1395,6 @@
               "default": 20,
               "type": "number"
             }
-          },
-          {
-            "description": "Page number (1-based)",
-            "required": false,
-            "name": "page",
-            "in": "query",
-            "schema": {
-              "minimum": 1,
-              "default": 1,
-              "type": "number"
-            }
-          },
-          {
-            "description": "Items per page",
-            "required": false,
-            "name": "limit",
-            "in": "query",
-            "schema": {
-              "minimum": 1,
-              "maximum": 100,
-              "default": 20,
-              "type": "number"
-            }
           }
         ],
         "responses": {
@@ -1685,26 +1582,6 @@
               "example": "Norte",
               "type": "string"
             }
-          },
-          {
-            "description": "Filter by route status",
-            "required": false,
-            "name": "status",
-            "in": "query",
-            "schema": {
-              "example": "ACTIVE",
-              "type": "string"
-            }
-          },
-          {
-            "description": "Search by route name or direction",
-            "required": false,
-            "name": "search",
-            "in": "query",
-            "schema": {
-              "example": "Norte",
-              "type": "string"
-            }
           }
         ],
         "responses": {
@@ -1872,26 +1749,6 @@
               "example": "Norte",
               "type": "string"
             }
-          },
-          {
-            "description": "Filter by day of week",
-            "required": false,
-            "name": "dayOfWeek",
-            "in": "query",
-            "schema": {
-              "example": "MONDAY",
-              "type": "string"
-            }
-          },
-          {
-            "description": "Filter by direction",
-            "required": false,
-            "name": "direction",
-            "in": "query",
-            "schema": {
-              "example": "Norte",
-              "type": "string"
-            }
           }
         ],
         "responses": {
@@ -1946,29 +1803,6 @@
             "required": false,
             "in": "query",
             "description": "Items per page",
-            "schema": {
-              "minimum": 1,
-              "maximum": 100,
-              "default": 20,
-              "type": "number"
-            }
-          },
-          {
-            "description": "Page number (1-based)",
-            "required": false,
-            "name": "page",
-            "in": "query",
-            "schema": {
-              "minimum": 1,
-              "default": 1,
-              "type": "number"
-            }
-          },
-          {
-            "description": "Items per page",
-            "required": false,
-            "name": "limit",
-            "in": "query",
             "schema": {
               "minimum": 1,
               "maximum": 100,
@@ -2083,6 +1917,7 @@
             "in": "query",
             "description": "Filter by user ID",
             "schema": {
+              "example": "550e8400-e29b-41d4-a716-446655440000",
               "type": "string"
             }
           },
@@ -2092,6 +1927,7 @@
             "in": "query",
             "description": "Filter by route ID",
             "schema": {
+              "example": "550e8400-e29b-41d4-a716-446655440001",
               "type": "string"
             }
           }
@@ -2168,7 +2004,7 @@
   },
   "info": {
     "title": "UPS ExpresosApp API",
-    "description": "Backend API for UPS ExpresosApp MVP - Institutional transport management system for Universidad Politecnica Salesiana.",
+    "description": "Backend API for UPS ExpresosApp MVP - Institutional transport management system for Universidad Politécnica Salesiana. This phase includes: OTP-based authentication, route management, stops, schedules, vehicles, drivers, notices, and audit logging.",
     "version": "1.0.0",
     "contact": {}
   },
@@ -2218,7 +2054,20 @@
       "description": "Trip feedback and ratings from students"
     }
   ],
-  "servers": [],
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "Local development"
+    },
+    {
+      "url": "https://staging-api.example.com",
+      "description": "Staging environment"
+    },
+    {
+      "url": "https://api.example.com",
+      "description": "Production environment"
+    }
+  ],
   "components": {
     "securitySchemes": {
       "bearer": {
@@ -2272,9 +2121,10 @@
             "example": "student@est.ups.edu.ec"
           },
           "name": {
-            "type": "object",
-            "example": null,
-            "nullable": true
+            "type": "string",
+            "nullable": true,
+            "description": "User full name",
+            "example": "John Doe"
           },
           "role": {
             "type": "string",
@@ -2298,7 +2148,6 @@
         "required": [
           "id",
           "email",
-          "name",
           "role",
           "emailVerified",
           "isActive"
@@ -2399,9 +2248,10 @@
             "example": "Norte - Salesiana"
           },
           "description": {
-            "type": "object",
-            "example": "Ruta que cubre el norte de la ciudad",
-            "nullable": true
+            "type": "string",
+            "nullable": true,
+            "description": "Route description",
+            "example": "Campus route"
           },
           "direction": {
             "type": "string",
@@ -2432,7 +2282,6 @@
         "required": [
           "id",
           "name",
-          "description",
           "direction",
           "status",
           "isActive",
@@ -2588,9 +2437,10 @@
             "example": "Parque de la Madre"
           },
           "reference": {
-            "type": "object",
-            "example": "Av. 12 de Abril y Loja",
-            "nullable": true
+            "type": "string",
+            "nullable": true,
+            "description": "Location reference",
+            "example": "Next to library"
           },
           "latitude": {
             "type": "number",
@@ -2616,7 +2466,6 @@
         "required": [
           "id",
           "name",
-          "reference",
           "latitude",
           "longitude",
           "isActive",
@@ -2763,9 +2612,10 @@
             "example": "07:30"
           },
           "approximateArrivalTime": {
-            "type": "object",
-            "example": "08:15",
-            "nullable": true
+            "type": "string",
+            "nullable": true,
+            "description": "Approximate arrival time",
+            "example": "08:15"
           },
           "status": {
             "type": "string",
@@ -2790,7 +2640,6 @@
           "dayOfWeek",
           "direction",
           "departureTime",
-          "approximateArrivalTime",
           "status",
           "createdAt",
           "updatedAt"
@@ -3048,14 +2897,16 @@
             "example": "Juan Pérez"
           },
           "phone": {
-            "type": "object",
-            "example": "+593991234567",
-            "nullable": true
+            "type": "string",
+            "nullable": true,
+            "description": "Phone number",
+            "example": "+593999999999"
           },
           "licenseNumber": {
-            "type": "object",
-            "example": "L123456789",
-            "nullable": true
+            "type": "string",
+            "nullable": true,
+            "description": "License number",
+            "example": "LIC-123456"
           },
           "status": {
             "type": "string",
@@ -3066,14 +2917,16 @@
             "example": "ACTIVE"
           },
           "assignedVehicleId": {
-            "type": "object",
-            "example": "550e8400-e29b-41d4-a716-446655440000",
-            "nullable": true
+            "type": "string",
+            "nullable": true,
+            "description": "Assigned vehicle ID",
+            "example": "550e8400-e29b-41d4-a716-446655440000"
           },
           "assignedRouteId": {
-            "type": "object",
-            "example": "550e8400-e29b-41d4-a716-446655440000",
-            "nullable": true
+            "type": "string",
+            "nullable": true,
+            "description": "Assigned route ID",
+            "example": "550e8400-e29b-41d4-a716-446655440000"
           },
           "createdAt": {
             "type": "string",
@@ -3087,11 +2940,7 @@
         "required": [
           "id",
           "name",
-          "phone",
-          "licenseNumber",
           "status",
-          "assignedVehicleId",
-          "assignedRouteId",
           "createdAt",
           "updatedAt"
         ]
@@ -3210,15 +3059,15 @@
             "example": "admin@ups.edu.ec"
           },
           "name": {
-            "type": "object",
-            "example": "Admin User",
-            "nullable": true
+            "type": "string",
+            "nullable": true,
+            "description": "Creator full name",
+            "example": "Admin User"
           }
         },
         "required": [
           "id",
-          "email",
-          "name"
+          "email"
         ]
       },
       "NoticeResponseDto": {
@@ -3252,7 +3101,9 @@
           "publishedUntil": {
             "type": "string",
             "format": "date-time",
-            "nullable": true
+            "nullable": true,
+            "description": "Publication end date",
+            "example": "2026-07-10T23:59:59.000Z"
           },
           "isActive": {
             "type": "boolean",
@@ -3276,7 +3127,6 @@
           "message",
           "severity",
           "publishedFrom",
-          "publishedUntil",
           "isActive",
           "createdBy",
           "createdAt",
@@ -3353,14 +3203,16 @@
             "example": 1
           },
           "estimatedArrivalMinutes": {
-            "type": "object",
-            "example": 15,
-            "nullable": true
+            "type": "number",
+            "nullable": true,
+            "description": "Estimated arrival time in minutes",
+            "example": 15
           },
           "notes": {
-            "type": "object",
-            "example": "Parada principal",
-            "nullable": true
+            "type": "string",
+            "nullable": true,
+            "description": "Stop notes",
+            "example": "Main stop"
           },
           "stop": {
             "$ref": "#/components/schemas/StopResponseDto"
@@ -3369,8 +3221,6 @@
         "required": [
           "id",
           "stopOrder",
-          "estimatedArrivalMinutes",
-          "notes",
           "stop"
         ]
       },
@@ -3430,7 +3280,9 @@
           "publishedUntil": {
             "type": "string",
             "format": "date-time",
-            "nullable": true
+            "nullable": true,
+            "description": "Publication end date",
+            "example": "2026-07-10T23:59:59.000Z"
           }
         },
         "required": [
@@ -3438,8 +3290,7 @@
           "title",
           "message",
           "severity",
-          "publishedFrom",
-          "publishedUntil"
+          "publishedFrom"
         ]
       },
       "MobileNoticePaginatedResponseDto": {
@@ -3512,23 +3363,27 @@
             "example": "550e8400-e29b-41d4-a716-446655440002"
           },
           "driverId": {
-            "type": "object",
-            "example": "550e8400-e29b-41d4-a716-446655440003",
-            "nullable": true
+            "type": "string",
+            "nullable": true,
+            "description": "Driver ID",
+            "example": "550e8400-e29b-41d4-a716-446655440000"
           },
           "rating": {
             "type": "number",
             "example": 4
           },
           "comment": {
-            "type": "object",
-            "example": "El servicio fue puntual",
-            "nullable": true
+            "type": "string",
+            "nullable": true,
+            "description": "Comment",
+            "example": "Great service"
           },
           "travelDate": {
-            "type": "object",
-            "example": "2026-07-01T08:00:00.000Z",
-            "nullable": true
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "Travel date",
+            "example": "2026-07-05T10:00:00.000Z"
           },
           "createdAt": {
             "type": "string",

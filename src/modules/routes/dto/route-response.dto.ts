@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { RouteStatus } from '@prisma/client';
 
 export class RouteResponseDto {
@@ -8,8 +8,8 @@ export class RouteResponseDto {
   @ApiProperty({ example: 'Norte - Salesiana' })
   name!: string;
 
-  @ApiProperty({ example: 'Ruta que cubre el norte de la ciudad', nullable: true })
-  description!: string | null;
+  @ApiPropertyOptional({ type: String, nullable: true, description: 'Route description', example: 'Campus route' })
+  description?: string | null;
 
   @ApiProperty({ example: 'Norte' })
   direction!: string;

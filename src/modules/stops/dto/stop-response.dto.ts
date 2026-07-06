@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class StopResponseDto {
   @ApiProperty({ example: '550e8400-e29b-41d4-a716-446655440000' })
@@ -7,8 +7,8 @@ export class StopResponseDto {
   @ApiProperty({ example: 'Parque de la Madre' })
   name!: string;
 
-  @ApiProperty({ example: 'Av. 12 de Abril y Loja', nullable: true })
-  reference!: string | null;
+  @ApiPropertyOptional({ type: String, nullable: true, description: 'Location reference', example: 'Next to library' })
+  reference?: string | null;
 
   @ApiProperty({ example: -2.8975 })
   latitude!: number;

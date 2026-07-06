@@ -1,5 +1,16 @@
 import { z } from 'zod';
 
+// Helper para parsear booleanos de variables de entorno
+const parseBoolean = z
+  .union([z.boolean(), z.string()])
+  .transform((val) => {
+    if (typeof val === 'boolean') return val;
+    if (val === 'true' || val === '1') return true;
+    if (val === 'false' || val === '0' || val === '') return false;
+    return false;
+  })
+  .default(false);
+
 export const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
   PORT: z.coerce.number().int().positive().default(3000),
@@ -11,11 +22,11 @@ export const envSchema = z.object({
   JWT_REFRESH_EXPIRES_IN: z.string().default('7d'),
   OTP_EXPIRES_MINUTES: z.coerce.number().int().positive().default(10),
   OTP_MAX_ATTEMPTS: z.coerce.number().int().positive().default(5),
-  AUTH_DEV_EXPOSE_OTP: z.coerce.boolean().default(false),
+  AUTH_DEV_EXPOSE_OTP: parseBoolean,
   ALLOWED_EMAIL_DOMAINS: z.string().min(1),
   SUPER_ADMIN_EMAILS: z.string().default(''),
   CORS_ORIGINS: z.string().default('http://localhost:3000'),
-  SWAGGER_ENABLED: z.coerce.boolean().default(true),
+  SWAGGER_ENABLED: parseBoolean.default(true),
   SWAGGER_PATH: z.string().default('docs'),
   THROTTLE_TTL: z.coerce.number().int().positive().default(60000),
   THROTTLE_LIMIT: z.coerce.number().int().positive().default(10),
@@ -23,7 +34,7 @@ export const envSchema = z.object({
   THROTTLE_AUTH_LIMIT: z.coerce.number().int().positive().default(3),
   SMTP_HOST: z.string().optional(),
   SMTP_PORT: z.coerce.number().int().positive().optional(),
-  SMTP_SECURE: z.coerce.boolean().default(false),
+  SMTP_SECURE: parseBoolean,
   SMTP_USER: z.string().optional(),
   SMTP_PASS: z.string().optional(),
   SMTP_FROM: z.string().email().optional(),

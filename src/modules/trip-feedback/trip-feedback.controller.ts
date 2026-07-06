@@ -1,6 +1,6 @@
 import { Controller, Post, Get, Body, Param, Query } from '@nestjs/common';
 import {
-  ApiTags, ApiOperation, ApiBody, ApiParam, ApiQuery,
+  ApiTags, ApiOperation, ApiBody, ApiParam,
   ApiBearerAuth, ApiCreatedResponse, ApiOkResponse,
   ApiBadRequestResponse, ApiUnauthorizedResponse, ApiNotFoundResponse,
 } from '@nestjs/swagger';
@@ -8,6 +8,7 @@ import { TripFeedbackService } from './trip-feedback.service';
 import { CreateTripFeedbackDto } from './dto/create-trip-feedback.dto';
 import { TripFeedbackResponseDto } from './dto/trip-feedback-response.dto';
 import { TripFeedbackPaginatedResponseDto } from './dto/trip-feedback-paginated-response.dto';
+import { TripFeedbackFiltersDto } from './dto/trip-feedback-filters.dto';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { JwtPayload } from '../../common/types/jwt-payload.type';
 import { PaginationDto } from '../../common/dto/pagination.dto';
@@ -37,10 +38,6 @@ export class TripFeedbackController {
 
   @Get()
   @ApiOperation({ summary: 'List trip feedback with pagination' })
-  @ApiQuery({ name: 'page', required: false, type: Number, description: 'Page number (1-based)' })
-  @ApiQuery({ name: 'limit', required: false, type: Number, description: 'Items per page' })
-  @ApiQuery({ name: 'userId', required: false, type: String, description: 'Filter by user ID' })
-  @ApiQuery({ name: 'routeId', required: false, type: String, description: 'Filter by route ID' })
   @ApiOkResponse({
     description: 'Paginated list of feedback',
     type: TripFeedbackPaginatedResponseDto,
@@ -48,12 +45,11 @@ export class TripFeedbackController {
   @ApiUnauthorizedResponse({ description: 'Not authenticated' })
   async findAll(
     @Query() pagination: PaginationDto,
-    @Query('userId') userId?: string,
-    @Query('routeId') routeId?: string,
+    @Query() filters: TripFeedbackFiltersDto,
   ): Promise<TripFeedbackPaginatedResponseDto> {
     const page = pagination.page ?? 1;
     const limit = pagination.limit ?? 20;
-    return this.tripFeedbackService.findAll(page, limit, userId, routeId);
+    return this.tripFeedbackService.findAll(page, limit, filters.userId, filters.routeId);
   }
 
   @Get(':id')

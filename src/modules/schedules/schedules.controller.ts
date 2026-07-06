@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Patch, Body, Param, Query } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiCreatedResponse, ApiOkResponse, ApiParam, ApiQuery, ApiBody, ApiBearerAuth, ApiUnauthorizedResponse, ApiForbiddenResponse, ApiNotFoundResponse, ApiBadRequestResponse } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiCreatedResponse, ApiOkResponse, ApiParam, ApiBody, ApiBearerAuth, ApiUnauthorizedResponse, ApiForbiddenResponse, ApiNotFoundResponse, ApiBadRequestResponse } from '@nestjs/swagger';
 import { UserRole } from '@prisma/client';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
@@ -34,8 +34,6 @@ export class SchedulesController {
 
   @Get()
   @ApiOperation({ summary: 'List schedules with pagination and filters' })
-  @ApiQuery({ type: PaginationDto })
-  @ApiQuery({ type: ScheduleFiltersDto })
   @ApiOkResponse({ type: SchedulePaginatedResponseDto, description: 'Paginated list of schedules' })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiForbiddenResponse({ description: 'Forbidden' })

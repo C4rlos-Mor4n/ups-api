@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { StopResponseDto } from '../../stops/dto/stop-response.dto';
 
 export class MobileRouteStopResponseDto {
@@ -8,11 +8,11 @@ export class MobileRouteStopResponseDto {
   @ApiProperty({ example: 1 })
   stopOrder!: number;
 
-  @ApiProperty({ example: 15, nullable: true })
-  estimatedArrivalMinutes!: number | null;
+  @ApiPropertyOptional({ type: Number, nullable: true, description: 'Estimated arrival time in minutes', example: 15 })
+  estimatedArrivalMinutes?: number | null;
 
-  @ApiProperty({ example: 'Parada principal', nullable: true })
-  notes!: string | null;
+  @ApiPropertyOptional({ type: String, nullable: true, description: 'Stop notes', example: 'Main stop' })
+  notes?: string | null;
 
   @ApiProperty({ type: StopResponseDto })
   stop!: StopResponseDto;

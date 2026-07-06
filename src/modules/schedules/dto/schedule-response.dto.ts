@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { DayOfWeek, ScheduleStatus } from '@prisma/client';
 
 export class ScheduleResponseDto {
@@ -17,8 +17,8 @@ export class ScheduleResponseDto {
   @ApiProperty({ example: '07:30' })
   departureTime!: string;
 
-  @ApiProperty({ example: '08:15', nullable: true })
-  approximateArrivalTime!: string | null;
+  @ApiPropertyOptional({ type: String, nullable: true, description: 'Approximate arrival time', example: '08:15' })
+  approximateArrivalTime?: string | null;
 
   @ApiProperty({ enum: ScheduleStatus, example: ScheduleStatus.ACTIVE })
   status!: ScheduleStatus;

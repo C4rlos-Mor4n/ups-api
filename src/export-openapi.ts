@@ -9,9 +9,13 @@ async function exportOpenApi(): Promise<void> {
   const config = new DocumentBuilder()
     .setTitle('UPS ExpresosApp API')
     .setDescription(
-      'Backend API for UPS ExpresosApp MVP - Institutional transport management system for Universidad Politecnica Salesiana.',
+      'Backend API for UPS ExpresosApp MVP - Institutional transport management system for Universidad Politécnica Salesiana. ' +
+      'This phase includes: OTP-based authentication, route management, stops, schedules, vehicles, drivers, notices, and audit logging.',
     )
     .setVersion('1.0.0')
+    .addServer('http://localhost:3000', 'Local development')
+    .addServer('https://staging-api.example.com', 'Staging environment')
+    .addServer('https://api.example.com', 'Production environment')
     .addBearerAuth()
     .addTag('Health', 'Service health checks')
     .addTag('Auth', 'Authentication and OTP verification')
