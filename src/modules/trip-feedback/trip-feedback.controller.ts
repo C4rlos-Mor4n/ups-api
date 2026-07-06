@@ -54,7 +54,7 @@ export class TripFeedbackController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Get trip feedback by ID' })
-  @ApiParam({ name: 'id', description: 'Feedback ID' })
+  @ApiParam({ name: 'id', description: 'Feedback ID', format: 'uuid' })
   @ApiOkResponse({
     description: 'Feedback details',
     type: TripFeedbackResponseDto,

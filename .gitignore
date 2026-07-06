@@ -6,3 +6,5 @@ dist/
 *.d.ts
 !prisma/seed.ts
 coverage/
+AUDITORIA-OPENAPI.md
+openapi-spec.json

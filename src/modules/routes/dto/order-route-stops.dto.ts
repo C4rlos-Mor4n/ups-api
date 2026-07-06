@@ -3,7 +3,7 @@ import { Type } from 'class-transformer';
 import { ArrayMinSize, IsInt, IsNotEmpty, IsOptional, IsString, IsUUID, Min, ValidateNested } from 'class-validator';
 
 export class RouteStopOrderItemDto {
-  @ApiProperty({ description: 'Stop ID', example: '550e8400-e29b-41d4-a716-446655440000' })
+  @ApiProperty({ format: 'uuid', description: 'Stop ID', example: '550e8400-e29b-41d4-a716-446655440000' })
   @IsUUID()
   @IsNotEmpty()
   stopId!: string;

@@ -39,10 +39,11 @@ Este paquete contiene toda la documentacion necesaria para que los equipos de **
 | Entorno | URL | Estado |
 |---------|-----|--------|
 | Local (desarrollo) | `http://localhost:3000` | Activo |
-| Staging | _(pendiente de definir)_ | - |
-| Produccion | _(pendiente de definir)_ | - |
+| Produccion | `https://ups-api-sfq9.onrender.com` | Activo |
 
 > La API corre por defecto en el puerto **3000**. El path de Swagger UI local es `http://localhost:3000/docs`.
+> 
+> **Produccion:** La API esta desplegada en Render en `https://ups-api-sfq9.onrender.com`. Swagger UI disponible en `https://ups-api-sfq9.onrender.com/docs`.
 
 ## Autenticacion rapida
 
@@ -83,11 +84,3 @@ La API valida que el email pertenezca a dominios institucionales de la UPS. Los 
 - Credenciales de base de datos
 - Tokens JWT reales
 - Configuracion SMTP
-
-## Pendientes antes de piloto
-
-- [ ] Definir URL de Staging
-- [ ] Definir URL de Produccion
-- [ ] Configurar CORS para dominios de frontend
-- [ ] Configurar SMTP para envio de emails en produccion
-- [ ] Generar secrets JWT seguros para produccion

@@ -3,6 +3,7 @@ import { IsUUID, IsInt, Min, Max, IsOptional, IsString, IsISO8601 } from 'class-
 
 export class CreateTripFeedbackDto {
   @ApiProperty({
+    format: 'uuid',
     description: 'ID of the route being reviewed',
     example: '550e8400-e29b-41d4-a716-446655440000',
   })
@@ -10,6 +11,7 @@ export class CreateTripFeedbackDto {
   routeId!: string;
 
   @ApiPropertyOptional({
+    format: 'uuid',
     description: 'ID of the driver (optional)',
     example: '550e8400-e29b-41d4-a716-446655440001',
   })
@@ -37,6 +39,7 @@ export class CreateTripFeedbackDto {
   comment?: string;
 
   @ApiPropertyOptional({
+    format: 'date-time',
     description: 'Date of travel (ISO 8601)',
     example: '2026-07-01T08:00:00.000Z',
   })

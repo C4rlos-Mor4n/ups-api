@@ -752,6 +752,7 @@
             "in": "query",
             "description": "Filter by route ID",
             "schema": {
+              "format": "uuid",
               "example": "550e8400-e29b-41d4-a716-446655440000",
               "type": "string"
             }
@@ -1917,6 +1918,7 @@
             "in": "query",
             "description": "Filter by user ID",
             "schema": {
+              "format": "uuid",
               "example": "550e8400-e29b-41d4-a716-446655440000",
               "type": "string"
             }
@@ -1927,6 +1929,7 @@
             "in": "query",
             "description": "Filter by route ID",
             "schema": {
+              "format": "uuid",
               "example": "550e8400-e29b-41d4-a716-446655440001",
               "type": "string"
             }
@@ -1968,6 +1971,7 @@
             "in": "path",
             "description": "Feedback ID",
             "schema": {
+              "format": "uuid",
               "type": "string"
             }
           }
@@ -2060,12 +2064,12 @@
       "description": "Local development"
     },
     {
-      "url": "https://staging-api.example.com",
-      "description": "Staging environment"
+      "url": "https://ups-api-sfq9.onrender.com",
+      "description": "Production (Render)"
     },
     {
-      "url": "https://api.example.com",
-      "description": "Production environment"
+      "url": "https://staging-api.example.com",
+      "description": "Staging environment (placeholder)"
     }
   ],
   "components": {
@@ -2114,6 +2118,7 @@
         "properties": {
           "id": {
             "type": "string",
+            "format": "uuid",
             "example": "550e8400-e29b-41d4-a716-446655440000"
           },
           "email": {
@@ -2241,6 +2246,7 @@
         "properties": {
           "id": {
             "type": "string",
+            "format": "uuid",
             "example": "550e8400-e29b-41d4-a716-446655440000"
           },
           "name": {
@@ -2347,6 +2353,7 @@
         "properties": {
           "stopId": {
             "type": "string",
+            "format": "uuid",
             "description": "Stop ID",
             "example": "550e8400-e29b-41d4-a716-446655440000"
           },
@@ -2430,6 +2437,7 @@
         "properties": {
           "id": {
             "type": "string",
+            "format": "uuid",
             "example": "550e8400-e29b-41d4-a716-446655440000"
           },
           "name": {
@@ -2530,6 +2538,7 @@
         "properties": {
           "routeId": {
             "type": "string",
+            "format": "uuid",
             "description": "Route ID",
             "example": "550e8400-e29b-41d4-a716-446655440000"
           },
@@ -2584,10 +2593,12 @@
         "properties": {
           "id": {
             "type": "string",
+            "format": "uuid",
             "example": "550e8400-e29b-41d4-a716-446655440000"
           },
           "routeId": {
             "type": "string",
+            "format": "uuid",
             "example": "550e8400-e29b-41d4-a716-446655440000"
           },
           "dayOfWeek": {
@@ -2668,6 +2679,7 @@
         "properties": {
           "routeId": {
             "type": "string",
+            "format": "uuid",
             "description": "Route ID",
             "example": "550e8400-e29b-41d4-a716-446655440000"
           },
@@ -2752,6 +2764,7 @@
         "properties": {
           "id": {
             "type": "string",
+            "format": "uuid",
             "example": "550e8400-e29b-41d4-a716-446655440000"
           },
           "plate": {
@@ -2872,11 +2885,13 @@
           },
           "assignedVehicleId": {
             "type": "string",
+            "format": "uuid",
             "description": "Assigned vehicle ID",
             "example": "550e8400-e29b-41d4-a716-446655440000"
           },
           "assignedRouteId": {
             "type": "string",
+            "format": "uuid",
             "description": "Assigned route ID",
             "example": "550e8400-e29b-41d4-a716-446655440000"
           }
@@ -2890,6 +2905,7 @@
         "properties": {
           "id": {
             "type": "string",
+            "format": "uuid",
             "example": "550e8400-e29b-41d4-a716-446655440000"
           },
           "name": {
@@ -2918,12 +2934,14 @@
           },
           "assignedVehicleId": {
             "type": "string",
+            "format": "uuid",
             "nullable": true,
             "description": "Assigned vehicle ID",
             "example": "550e8400-e29b-41d4-a716-446655440000"
           },
           "assignedRouteId": {
             "type": "string",
+            "format": "uuid",
             "nullable": true,
             "description": "Assigned route ID",
             "example": "550e8400-e29b-41d4-a716-446655440000"
@@ -2992,11 +3010,13 @@
           },
           "assignedVehicleId": {
             "type": "string",
+            "format": "uuid",
             "description": "Assigned vehicle ID",
             "example": "550e8400-e29b-41d4-a716-446655440000"
           },
           "assignedRouteId": {
             "type": "string",
+            "format": "uuid",
             "description": "Assigned route ID",
             "example": "550e8400-e29b-41d4-a716-446655440000"
           }
@@ -3027,11 +3047,13 @@
           },
           "publishedFrom": {
             "type": "string",
+            "format": "date-time",
             "description": "Publication start date in ISO 8601 format",
             "example": "2026-06-29T00:00:00.000Z"
           },
           "publishedUntil": {
             "type": "string",
+            "format": "date-time",
             "description": "Publication end date in ISO 8601 format",
             "example": "2026-07-01T23:59:59.000Z"
           },
@@ -3052,6 +3074,7 @@
         "properties": {
           "id": {
             "type": "string",
+            "format": "uuid",
             "example": "550e8400-e29b-41d4-a716-446655440000"
           },
           "email": {
@@ -3075,6 +3098,7 @@
         "properties": {
           "id": {
             "type": "string",
+            "format": "uuid",
             "example": "550e8400-e29b-41d4-a716-446655440000"
           },
           "title": {
@@ -3176,11 +3200,13 @@
           },
           "publishedFrom": {
             "type": "string",
+            "format": "date-time",
             "description": "Publication start date in ISO 8601 format",
             "example": "2026-06-29T00:00:00.000Z"
           },
           "publishedUntil": {
             "type": "string",
+            "format": "date-time",
             "description": "Publication end date in ISO 8601 format",
             "example": "2026-07-01T23:59:59.000Z"
           },
@@ -3196,6 +3222,7 @@
         "properties": {
           "id": {
             "type": "string",
+            "format": "uuid",
             "example": "550e8400-e29b-41d4-a716-446655440000"
           },
           "stopOrder": {
@@ -3316,11 +3343,13 @@
         "properties": {
           "routeId": {
             "type": "string",
+            "format": "uuid",
             "description": "ID of the route being reviewed",
             "example": "550e8400-e29b-41d4-a716-446655440000"
           },
           "driverId": {
             "type": "string",
+            "format": "uuid",
             "description": "ID of the driver (optional)",
             "example": "550e8400-e29b-41d4-a716-446655440001"
           },
@@ -3338,6 +3367,7 @@
           },
           "travelDate": {
             "type": "string",
+            "format": "date-time",
             "description": "Date of travel (ISO 8601)",
             "example": "2026-07-01T08:00:00.000Z"
           }
@@ -3352,18 +3382,22 @@
         "properties": {
           "id": {
             "type": "string",
+            "format": "uuid",
             "example": "550e8400-e29b-41d4-a716-446655440000"
           },
           "userId": {
             "type": "string",
+            "format": "uuid",
             "example": "550e8400-e29b-41d4-a716-446655440001"
           },
           "routeId": {
             "type": "string",
+            "format": "uuid",
             "example": "550e8400-e29b-41d4-a716-446655440002"
           },
           "driverId": {
             "type": "string",
+            "format": "uuid",
             "nullable": true,
             "description": "Driver ID",
             "example": "550e8400-e29b-41d4-a716-446655440000"
@@ -3387,6 +3421,7 @@
           },
           "createdAt": {
             "type": "string",
+            "format": "date-time",
             "example": "2026-07-01T10:00:00.000Z"
           }
         },

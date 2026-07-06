@@ -392,25 +392,7 @@ pnpm export:openapi         # Exportar OpenAPI spec a JSON
 - No guardar refresh tokens en texto plano
 - No loguear tokens ni OTP
 - Rotación de refresh tokens en cada uso
-- Sesiones revocables
-
-## 🎯 Próximos Pasos
-
-### Fase 2 (Futuro)
-
-- [ ] GPS en tiempo real para unidades
-- [ ] Notificaciones push
-- [ ] ETA dinámico
-- [ ] Endpoints DELETE para soft-delete
-- [ ] Tests e2e completos
-- [ ] WebSocket para actualizaciones en tiempo real
-
-### Pendientes inmediatos
-
-- [ ] Configurar SMTP real y probar envío de correos
-- [ ] Definir URLs de Staging y Producción
-- [ ] Ajustar tests e2e (infraestructura lista)
-- [ ] Implementar endpoints admin para TripFeedback
+ - Sesiones revocables
 
 ## 📄 Licencia
 
@@ -419,20 +401,19 @@ Este proyecto es propiedad de la Universidad Politécnica Salesiana.
 ## 👥 Equipo
 
 - **Backend**: Carlos Morán
-- **Frontend Web**: (pendiente)
-- **App Móvil**: (pendiente)
 
 ## 📞 Soporte
 
 Para dudas sobre la API, consultar:
 
 1. Swagger UI: http://localhost:3000/docs
-2. Documentación en `docs/handoff/`
-3. OpenAPI spec: `docs/handoff/ups-expresosapp-openapi.json`
+2. Producción: https://ups-api-sfq9.onrender.com/docs
+3. Documentación en `docs/handoff/`
+4. OpenAPI spec: `docs/handoff/ups-expresosapp-openapi.json`
 
 ---
 
-**Proyecto**: UPS ExpresosApp API
-**Versión**: 1.0.0
-**Última actualización**: 2026-07-05
-**Estado**: ✅ Fase 1 completada - API lista para consumo por frontend
+**Proyecto**: UPS ExpresosApp API  
+**Versión**: 1.0.0  
+**Última actualización**: 2026-07-05  
+**Estado**: ✅ Completado - API en producción

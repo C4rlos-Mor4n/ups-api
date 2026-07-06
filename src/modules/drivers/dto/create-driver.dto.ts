@@ -23,12 +23,12 @@ export class CreateDriverDto {
   @IsOptional()
   status?: DriverStatus;
 
-  @ApiPropertyOptional({ description: 'Assigned vehicle ID', example: '550e8400-e29b-41d4-a716-446655440000' })
+  @ApiPropertyOptional({ format: 'uuid', description: 'Assigned vehicle ID', example: '550e8400-e29b-41d4-a716-446655440000' })
   @IsUUID()
   @IsOptional()
   assignedVehicleId?: string;
 
-  @ApiPropertyOptional({ description: 'Assigned route ID', example: '550e8400-e29b-41d4-a716-446655440000' })
+  @ApiPropertyOptional({ format: 'uuid', description: 'Assigned route ID', example: '550e8400-e29b-41d4-a716-446655440000' })
   @IsUUID()
   @IsOptional()
   assignedRouteId?: string;

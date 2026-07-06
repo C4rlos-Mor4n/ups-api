@@ -3,7 +3,7 @@ import { DayOfWeek, ScheduleStatus } from '@prisma/client';
 import { IsEnum, IsNotEmpty, IsOptional, IsString, IsUUID, Matches } from 'class-validator';
 
 export class CreateScheduleDto {
-  @ApiProperty({ description: 'Route ID', example: '550e8400-e29b-41d4-a716-446655440000' })
+  @ApiProperty({ format: 'uuid', description: 'Route ID', example: '550e8400-e29b-41d4-a716-446655440000' })
   @IsUUID()
   @IsNotEmpty()
   routeId!: string;

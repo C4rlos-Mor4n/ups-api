@@ -2,7 +2,7 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { DriverStatus } from '@prisma/client';
 
 export class DriverResponseDto {
-  @ApiProperty({ example: '550e8400-e29b-41d4-a716-446655440000' })
+  @ApiProperty({ format: 'uuid', example: '550e8400-e29b-41d4-a716-446655440000' })
   id!: string;
 
   @ApiProperty({ example: 'Juan Pérez' })
@@ -17,10 +17,10 @@ export class DriverResponseDto {
   @ApiProperty({ enum: DriverStatus, example: DriverStatus.ACTIVE })
   status!: DriverStatus;
 
-  @ApiPropertyOptional({ type: String, nullable: true, description: 'Assigned vehicle ID', example: '550e8400-e29b-41d4-a716-446655440000' })
+  @ApiPropertyOptional({ type: String, format: 'uuid', nullable: true, description: 'Assigned vehicle ID', example: '550e8400-e29b-41d4-a716-446655440000' })
   assignedVehicleId?: string | null;
 
-  @ApiPropertyOptional({ type: String, nullable: true, description: 'Assigned route ID', example: '550e8400-e29b-41d4-a716-446655440000' })
+  @ApiPropertyOptional({ type: String, format: 'uuid', nullable: true, description: 'Assigned route ID', example: '550e8400-e29b-41d4-a716-446655440000' })
   assignedRouteId?: string | null;
 
   @ApiProperty({ type: 'string', format: 'date-time' })

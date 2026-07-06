@@ -1,16 +1,16 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class TripFeedbackResponseDto {
-  @ApiProperty({ example: '550e8400-e29b-41d4-a716-446655440000' })
+  @ApiProperty({ format: 'uuid', example: '550e8400-e29b-41d4-a716-446655440000' })
   id!: string;
 
-  @ApiProperty({ example: '550e8400-e29b-41d4-a716-446655440001' })
+  @ApiProperty({ format: 'uuid', example: '550e8400-e29b-41d4-a716-446655440001' })
   userId!: string;
 
-  @ApiProperty({ example: '550e8400-e29b-41d4-a716-446655440002' })
+  @ApiProperty({ format: 'uuid', example: '550e8400-e29b-41d4-a716-446655440002' })
   routeId!: string;
 
-  @ApiPropertyOptional({ type: String, nullable: true, description: 'Driver ID', example: '550e8400-e29b-41d4-a716-446655440000' })
+  @ApiPropertyOptional({ type: String, format: 'uuid', nullable: true, description: 'Driver ID', example: '550e8400-e29b-41d4-a716-446655440000' })
   driverId?: string | null;
 
   @ApiProperty({ example: 4 })
@@ -28,6 +28,6 @@ export class TripFeedbackResponseDto {
   })
   travelDate?: string | null;
 
-  @ApiProperty({ example: '2026-07-01T10:00:00.000Z' })
+  @ApiProperty({ format: 'date-time', example: '2026-07-01T10:00:00.000Z' })
   createdAt!: string;
 }

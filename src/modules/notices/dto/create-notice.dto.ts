@@ -18,11 +18,11 @@ export class CreateNoticeDto {
   @IsOptional()
   severity?: NoticeSeverity;
 
-  @ApiProperty({ description: 'Publication start date in ISO 8601 format', example: '2026-06-29T00:00:00.000Z' })
+  @ApiProperty({ format: 'date-time', description: 'Publication start date in ISO 8601 format', example: '2026-06-29T00:00:00.000Z' })
   @IsDateString()
   publishedFrom!: string;
 
-  @ApiPropertyOptional({ description: 'Publication end date in ISO 8601 format', example: '2026-07-01T23:59:59.000Z' })
+  @ApiPropertyOptional({ format: 'date-time', description: 'Publication end date in ISO 8601 format', example: '2026-07-01T23:59:59.000Z' })
   @IsDateString()
   @IsOptional()
   publishedUntil?: string;
