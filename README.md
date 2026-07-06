@@ -13,6 +13,7 @@ UPS ExpresosApp es una solución institucional que permite a los estudiantes de 
 ### Estado Actual
 
 ✅ **Fase 1 Completada** - API lista para consumo por frontend
+
 - 40 endpoints implementados y documentados con Swagger
 - 92 tests unitarios pasando
 - Autenticación OTP + JWT con refresh tokens
@@ -23,6 +24,7 @@ UPS ExpresosApp es una solución institucional que permite a los estudiantes de 
 ## 🚀 Características Principales
 
 ### Autenticación y Seguridad
+
 - **OTP por email**: Autenticación sin contraseñas usando códigos de un solo uso
 - **JWT con refresh tokens**: Access tokens de 15min, refresh tokens de 7 días
 - **Rate limiting**: 10 req/min global, 3 req/min para endpoints de autenticación
@@ -31,6 +33,7 @@ UPS ExpresosApp es una solución institucional que permite a los estudiantes de 
 - **Trust proxy**: Configurado para funcionar detrás de nginx
 
 ### Gestión de Rutas
+
 - CRUD completo de rutas de transporte
 - Gestión de paradas con coordenadas GPS
 - Ordenamiento de paradas por ruta
@@ -38,16 +41,19 @@ UPS ExpresosApp es una solución institucional que permite a los estudiantes de 
 - Estados: ACTIVE, SUSPENDED, INACTIVE
 
 ### Gestión de Recursos
+
 - **Vehículos**: Placa, código, capacidad, estados (ACTIVE, MAINTENANCE, INACTIVE)
 - **Conductores**: Asignación a vehículos y rutas
 - **Avisos**: Publicación con fechas de vigencia y severidad (INFO, WARNING, CRITICAL)
 
 ### Feedback de Viajes
+
 - Estudiantes pueden calificar viajes (1-5 estrellas)
 - Comentarios opcionales
 - Historial de feedbacks por usuario y ruta
 
 ### Auditoría
+
 - Logs de todas las acciones administrativas
 - Registro de actor, acción, entidad y metadata
 
@@ -117,7 +123,6 @@ ups-api/
 ├── docs/handoff/                        # Documentación para frontend
 ├── docker-compose.yml                   # PostgreSQL
 ├── .env.example                         # Variables de entorno
-└── DEPLOY.md                            # Guía de deploy
 ```
 
 ## 📊 Modelo de Datos
@@ -141,10 +146,12 @@ ups-api/
 ## 🔌 Endpoints (40 total)
 
 ### Health (2 endpoints)
+
 - `GET /health` - Health check básico
 - `GET /health/db` - Health check de base de datos
 
 ### Auth (5 endpoints)
+
 - `POST /auth/request-code` - Solicitar OTP (rate limited: 3/min)
 - `POST /auth/verify-code` - Verificar OTP y obtener tokens
 - `POST /auth/refresh` - Renovar access token
@@ -152,6 +159,7 @@ ups-api/
 - `GET /auth/me` - Obtener usuario actual
 
 ### Admin API (25 endpoints) - Requiere rol ADMIN o SUPER_ADMIN
+
 - **Routes** (5): CRUD + ordenamiento de paradas
 - **Stops** (4): CRUD con validación de coordenadas
 - **Schedules** (4): CRUD con formato HH:mm
@@ -160,6 +168,7 @@ ups-api/
 - **Notices** (4): CRUD con fechas de publicación
 
 ### Mobile API (5 endpoints) - Requiere JWT (cualquier rol autenticado)
+
 - `GET /mobile/routes` - Listar rutas activas
 - `GET /mobile/routes/:id` - Detalle de ruta con paradas y horarios
 - `GET /mobile/routes/:id/stops` - Paradas de ruta ordenadas
@@ -167,6 +176,7 @@ ups-api/
 - `GET /mobile/notices` - Avisos activos
 
 ### Trip Feedback (3 endpoints) - Requiere JWT
+
 - `POST /trip-feedback` - Crear feedback (rating 1-5)
 - `GET /trip-feedback` - Listar feedbacks con filtros
 - `GET /trip-feedback/:id` - Obtener feedback
@@ -184,48 +194,56 @@ ups-api/
 ### Pasos
 
 1. **Clonar repositorio**
+
 ```bash
 git clone https://github.com/C4rlos-Mor4n/ups-api.git
 cd ups-api
 ```
 
 2. **Instalar dependencias**
+
 ```bash
 pnpm install
 ```
 
 3. **Configurar variables de entorno**
+
 ```bash
 cp .env.example .env
 # Editar .env con tus valores
 ```
 
 4. **Levantar PostgreSQL**
+
 ```bash
 docker compose up -d
 ```
 
 5. **Ejecutar migraciones**
+
 ```bash
 pnpm prisma migrate deploy
 ```
 
 6. **Generar Prisma Client**
+
 ```bash
 pnpm prisma generate
 ```
 
 7. **Seed de datos de prueba (opcional)**
+
 ```bash
 pnpm prisma:seed
 ```
 
 8. **Iniciar servidor de desarrollo**
+
 ```bash
 pnpm start:dev
 ```
 
-La API estará disponible en `http://localhost:3000`  
+La API estará disponible en `http://localhost:3000`
 Swagger UI en `http://localhost:3000/docs`
 
 ## 🔐 Variables de Entorno
@@ -233,6 +251,7 @@ Swagger UI en `http://localhost:3000/docs`
 Copiar `.env.example` a `.env` y ajustar:
 
 ### Desarrollo
+
 ```bash
 NODE_ENV=development
 PORT=3000
@@ -249,6 +268,7 @@ SWAGGER_ENABLED=true
 ```
 
 ### Producción
+
 ```bash
 NODE_ENV=production
 JWT_ACCESS_SECRET="<generar-32-caracteres-minimo>"
@@ -269,11 +289,13 @@ Ver `.env.example` para lista completa.
 ## 🧪 Tests
 
 ### Tests Unitarios (92 tests)
+
 ```bash
 pnpm test
 ```
 
 Cobertura:
+
 - Auth service (12 tests)
 - Roles guard (6 tests)
 - Routes service (7 tests)
@@ -286,6 +308,7 @@ Cobertura:
 - Mail service (9 tests)
 
 ### Tests E2E
+
 ```bash
 pnpm test:e2e
 ```
@@ -293,6 +316,7 @@ pnpm test:e2e
 Infraestructura lista con PostgreSQL aislado (puerto 5434).
 
 ### Validaciones
+
 ```bash
 pnpm lint          # ESLint
 pnpm typecheck     # TypeScript
@@ -320,20 +344,6 @@ El paquete de handoff completo está en `docs/handoff/`:
 3. Seleccionar "OpenAPI/Swagger"
 4. Subir `docs/handoff/ups-expresosapp-openapi.json`
 5. Los 40 endpoints aparecerán organizados por tags
-
-## 🚀 Deploy
-
-Ver [DEPLOY.md](DEPLOY.md) para guía completa de despliegue.
-
-### Checklist rápido
-
-- [ ] Configurar PostgreSQL de producción
-- [ ] Configurar SMTP real
-- [ ] Generar JWT secrets seguros (32+ caracteres)
-- [ ] Configurar reverse proxy (nginx) con headers X-Forwarded-For
-- [ ] Ejecutar migraciones: `pnpm prisma migrate deploy`
-- [ ] Configurar CORS para dominios de frontend
-- [ ] Deshabilitar Swagger en producción
 
 ## 📝 Scripts Disponibles
 
@@ -365,6 +375,7 @@ pnpm export:openapi         # Exportar OpenAPI spec a JSON
 ## 🔒 Seguridad
 
 ### Implementada
+
 - ✅ OTP hasheado con scrypt (nunca en texto plano)
 - ✅ Refresh tokens hasheados con SHA-256
 - ✅ Rate limiting (10 req/min global, 3 req/min auth)
@@ -376,6 +387,7 @@ pnpm export:openapi         # Exportar OpenAPI spec a JSON
 - ✅ No uso de `any` en TypeScript (zero tolerance)
 
 ### Buenas prácticas
+
 - No guardar OTP en texto plano
 - No guardar refresh tokens en texto plano
 - No loguear tokens ni OTP
@@ -385,6 +397,7 @@ pnpm export:openapi         # Exportar OpenAPI spec a JSON
 ## 🎯 Próximos Pasos
 
 ### Fase 2 (Futuro)
+
 - [ ] GPS en tiempo real para unidades
 - [ ] Notificaciones push
 - [ ] ETA dinámico
@@ -393,6 +406,7 @@ pnpm export:openapi         # Exportar OpenAPI spec a JSON
 - [ ] WebSocket para actualizaciones en tiempo real
 
 ### Pendientes inmediatos
+
 - [ ] Configurar SMTP real y probar envío de correos
 - [ ] Definir URLs de Staging y Producción
 - [ ] Ajustar tests e2e (infraestructura lista)
@@ -411,13 +425,14 @@ Este proyecto es propiedad de la Universidad Politécnica Salesiana.
 ## 📞 Soporte
 
 Para dudas sobre la API, consultar:
+
 1. Swagger UI: http://localhost:3000/docs
 2. Documentación en `docs/handoff/`
 3. OpenAPI spec: `docs/handoff/ups-expresosapp-openapi.json`
 
 ---
 
-**Proyecto**: UPS ExpresosApp API  
-**Versión**: 1.0.0  
-**Última actualización**: 2026-07-05  
+**Proyecto**: UPS ExpresosApp API
+**Versión**: 1.0.0
+**Última actualización**: 2026-07-05
 **Estado**: ✅ Fase 1 completada - API lista para consumo por frontend

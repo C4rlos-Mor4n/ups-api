@@ -30,17 +30,39 @@ export const envSchema = z.object({
 }).refine(
   (data) => {
     if (data.NODE_ENV === 'production') {
-      if (data.AUTH_DEV_EXPOSE_OTP) return false;
-      if (data.JWT_ACCESS_SECRET.startsWith('change-me')) return false;
-      if (data.JWT_REFRESH_SECRET.startsWith('change-me')) return false;
+      if (data.AUTH_DEV_EXPOSE_OTP) {
+        console.error('❌ AUTH_DEV_EXPOSE_OTP must be false in production');
+        return false;
+      }
+      if (data.JWT_ACCESS_SECRET.startsWith('change-me')) {
+        console.error('❌ JWT_ACCESS_SECRET cannot use default value in production');
+        return false;
+      }
+      if (data.JWT_REFRESH_SECRET.startsWith('change-me')) {
+        console.error('❌ JWT_REFRESH_SECRET cannot use default value in production');
+        return false;
+      }
       // En producción, SMTP es obligatorio
-      if (!data.SMTP_HOST || !data.SMTP_USER || !data.SMTP_PASS || !data.SMTP_FROM) {
+      if (!data.SMTP_HOST) {
+        console.error('❌ SMTP_HOST is required in production');
+        return false;
+      }
+      if (!data.SMTP_USER) {
+        console.error('❌ SMTP_USER is required in production');
+        return false;
+      }
+      if (!data.SMTP_PASS) {
+        console.error('❌ SMTP_PASS is required in production');
+        return false;
+      }
+      if (!data.SMTP_FROM) {
+        console.error('❌ SMTP_FROM is required in production');
         return false;
       }
     }
     return true;
   },
-  { message: 'Production environment cannot use dev OTP exposure, default secrets, or missing SMTP config' },
+  { message: 'Production environment validation failed. Check console for details.' },
 );
 
 export type EnvValidation = z.infer<typeof envSchema>;
