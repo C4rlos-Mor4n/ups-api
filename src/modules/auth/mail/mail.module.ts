@@ -16,15 +16,19 @@ import { AppConfig } from '../../../config/app.config';
         const logger = new Logger('MailModule');
         const appConfig = configService.get<AppConfig>('app', { infer: true });
         const nodeEnv = appConfig?.nodeEnv;
+        const smtpConfig = appConfig?.smtp;
         
         logger.log(`MailModule: nodeEnv=${nodeEnv}, appConfig exists=${!!appConfig}`);
-        logger.log(`MailModule: SMTP config: host=${appConfig?.smtp?.host}, user=${appConfig?.smtp?.user ? '***' : 'undefined'}`);
+        logger.log(`MailModule: SMTP config: host=${smtpConfig?.host}, user=${smtpConfig?.user ? '***' : 'undefined'}`);
         
-        if (nodeEnv === 'production') {
-          logger.log('MailModule: Using SmtpMailProvider');
+        // Usar SmtpMailProvider si las credenciales SMTP están configuradas
+        // independientemente del NODE_ENV
+        if (smtpConfig?.host && smtpConfig?.user && smtpConfig?.pass) {
+          logger.log('MailModule: Using SmtpMailProvider (SMTP credentials configured)');
           return new SmtpMailProvider(configService);
         }
-        logger.log('MailModule: Using DevMailProvider');
+        
+        logger.log('MailModule: Using DevMailProvider (no SMTP credentials)');
         return new DevMailProvider();
       },
       inject: [ConfigService],
