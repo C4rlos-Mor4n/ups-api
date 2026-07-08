@@ -10,7 +10,8 @@ export class SmtpMailProvider implements MailProvider {
   private transporter: nodemailer.Transporter;
 
   constructor(private readonly configService: ConfigService<AppConfig>) {
-    const smtpConfig = this.configService.get('smtp', { infer: true });
+    const appConfig = this.configService.get<AppConfig>('app', { infer: true });
+    const smtpConfig = appConfig?.smtp;
 
     if (!smtpConfig?.host || !smtpConfig?.user || !smtpConfig?.pass) {
       throw new Error('SMTP configuration is missing or incomplete');
@@ -30,8 +31,9 @@ export class SmtpMailProvider implements MailProvider {
   }
 
   async sendOtp(email: string, code: string): Promise<void> {
-    const smtpConfig = this.configService.get('smtp', { infer: true });
-    const appName = this.configService.get('appName', { infer: true });
+    const appConfig = this.configService.get<AppConfig>('app', { infer: true });
+    const smtpConfig = appConfig?.smtp;
+    const appName = appConfig?.appName;
 
     if (!smtpConfig?.from) {
       throw new Error('SMTP_FROM configuration is missing');
