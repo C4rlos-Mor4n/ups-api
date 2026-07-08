@@ -35,12 +35,11 @@ export class SmtpMailProvider implements MailProvider {
     const smtpConfig = appConfig?.smtp;
     const appName = appConfig?.appName;
 
-    if (!smtpConfig?.from) {
-      throw new Error('SMTP_FROM configuration is missing');
-    }
+    // Usar SMTP_FROM si está configurado, sino usar SMTP_USER
+    const fromAddress = smtpConfig?.from || smtpConfig?.user;
 
     await this.transporter.sendMail({
-      from: `"${appName}" <${smtpConfig.from}>`,
+      from: `"${appName}" <${fromAddress}>`,
       to: email,
       subject: 'Codigo de verificacion UPS ExpresosApp',
       text: `Tu codigo de verificacion es: ${code}`,
