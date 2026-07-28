@@ -4,7 +4,7 @@ import { UserRole } from '@prisma/client';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { PaginationDto } from '../../common/dto/pagination.dto';
 import { MobileService } from './mobile.service';
-import { MobileRouteFiltersDto } from './dto/mobile-route-filters.dto';
+import { MobileRouteQueryDto } from './dto/mobile-route-query.dto';
 import { MobileScheduleFiltersDto } from './dto/mobile-schedule-filters.dto';
 import { MobileRouteDetailResponseDto } from './dto/mobile-route-detail-response.dto';
 import { MobileRouteStopResponseDto } from './dto/mobile-route-stop-response.dto';
@@ -24,13 +24,10 @@ export class MobileController {
   @ApiOkResponse({ type: RoutePaginatedResponseDto, description: 'Paginated list of active routes' })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiForbiddenResponse({ description: 'Forbidden' })
-  findActiveRoutes(
-    @Query() pagination: PaginationDto,
-    @Query() filters: MobileRouteFiltersDto,
-  ): Promise<RoutePaginatedResponseDto> {
-    const page = pagination.page ?? 1;
-    const limit = pagination.limit ?? 20;
-    return this.mobileService.findActiveRoutes(page, limit, filters);
+  findActiveRoutes(@Query() query: MobileRouteQueryDto): Promise<RoutePaginatedResponseDto> {
+    const page = query.page ?? 1;
+    const limit = query.limit ?? 20;
+    return this.mobileService.findActiveRoutes(page, limit, query);
   }
 
   @Get('routes/:id')

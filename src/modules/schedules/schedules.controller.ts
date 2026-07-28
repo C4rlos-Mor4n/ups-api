@@ -3,13 +3,12 @@ import { ApiTags, ApiOperation, ApiCreatedResponse, ApiOkResponse, ApiParam, Api
 import { UserRole } from '@prisma/client';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
-import { PaginationDto } from '../../common/dto/pagination.dto';
 import { SchedulesService } from './schedules.service';
 import { CreateScheduleDto } from './dto/create-schedule.dto';
 import { UpdateScheduleDto } from './dto/update-schedule.dto';
 import { ScheduleResponseDto } from './dto/schedule-response.dto';
 import { SchedulePaginatedResponseDto } from './dto/schedule-paginated-response.dto';
-import { ScheduleFiltersDto } from './dto/schedule-filters.dto';
+import { ScheduleQueryDto } from './dto/schedule-query.dto';
 
 @ApiBearerAuth()
 @ApiTags('Admin Schedules')
@@ -37,13 +36,10 @@ export class SchedulesController {
   @ApiOkResponse({ type: SchedulePaginatedResponseDto, description: 'Paginated list of schedules' })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiForbiddenResponse({ description: 'Forbidden' })
-  findAll(
-    @Query() pagination: PaginationDto,
-    @Query() filters: ScheduleFiltersDto,
-  ): Promise<SchedulePaginatedResponseDto> {
-    const page = pagination.page ?? 1;
-    const limit = pagination.limit ?? 20;
-    return this.schedulesService.findAll(page, limit, filters);
+  findAll(@Query() query: ScheduleQueryDto): Promise<SchedulePaginatedResponseDto> {
+    const page = query.page ?? 1;
+    const limit = query.limit ?? 20;
+    return this.schedulesService.findAll(page, limit, query);
   }
 
   @Get(':id')

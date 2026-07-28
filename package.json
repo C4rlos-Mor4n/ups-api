@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "description": "UPS ExpresosApp API - Backend for institutional transport management",
   "private": true,
-  "main": "dist/main.js",
+  "main": "dist/src/main.js",
   "scripts": {
     "start:dev": "nest start --watch",
     "build": "nest build",
-    "start:prod": "node dist/main",
+    "start:prod": "node dist/src/main",
     "lint": "eslint \"{src,test}/**/*.ts\"",
     "typecheck": "tsc --noEmit",
     "test": "jest",
@@ -16,6 +16,8 @@
     "prisma:migrate": "prisma migrate dev",
     "prisma:generate": "prisma generate",
     "prisma:seed": "tsx prisma/seed.ts",
+    "prisma:seed:report": "tsx scripts/seed-report.ts",
+    "test:seed": "node --import tsx --test prisma/seed-data.spec.ts",
     "prisma:studio": "prisma studio",
     "export:openapi": "ts-node src/export-openapi.ts"
   },

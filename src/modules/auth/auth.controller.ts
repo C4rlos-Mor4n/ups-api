@@ -1,8 +1,8 @@
-import { Controller, Post, Get, Body } from '@nestjs/common';
+import { Controller, Post, Get, Body, HttpCode } from '@nestjs/common';
 import {
   ApiTags, ApiOperation, ApiOkResponse, ApiCreatedResponse,
   ApiBearerAuth, ApiTooManyRequestsResponse, ApiBadRequestResponse,
-  ApiUnauthorizedResponse, ApiForbiddenResponse,
+  ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
 import { AuthService } from './auth.service';
@@ -13,6 +13,7 @@ import { VerifyCodeDto } from './dto/verify-code.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { LogoutDto } from './dto/logout.dto';
 import { AuthTokensDto, AuthUserDto } from './dto/auth-response.dto';
+import { LogoutResponseDto, RequestCodeResponseDto } from './dto/auth-message-response.dto';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -23,9 +24,8 @@ export class AuthController {
   @Post('request-code')
   @Throttle({ default: { ttl: 60000, limit: 3 } })
   @ApiOperation({ summary: 'Request an OTP verification code' })
-  @ApiCreatedResponse({ description: 'Verification code sent' })
-  @ApiBadRequestResponse({ description: 'Invalid email format' })
-  @ApiForbiddenResponse({ description: 'Email domain not allowed' })
+  @ApiCreatedResponse({ type: RequestCodeResponseDto, description: 'Verification code sent' })
+  @ApiBadRequestResponse({ description: 'Invalid email format or email domain not allowed' })
   @ApiTooManyRequestsResponse({ description: 'Too many requests. Try again later.' })
   requestCode(@Body() dto: RequestCodeDto): Promise<{ message: string; devCode?: string }> {
     return this.authService.requestCode(dto);
@@ -52,9 +52,10 @@ export class AuthController {
   }
 
   @Post('logout')
+  @HttpCode(200)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Logout and revoke session' })
-  @ApiOkResponse({ description: 'Logged out successfully' })
+  @ApiOkResponse({ type: LogoutResponseDto, description: 'Logged out successfully' })
   @ApiUnauthorizedResponse({ description: 'Invalid or missing token' })
   @ApiBadRequestResponse({ description: 'Invalid request body' })
   logout(@Body() dto: LogoutDto): Promise<{ message: string }> {

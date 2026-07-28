@@ -1,7 +1,8 @@
 import { Controller, Get } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiOkResponse } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiOkResponse, ApiServiceUnavailableResponse } from '@nestjs/swagger';
 import { HealthService } from './health.service';
 import { Public } from '../../common/decorators/public.decorator';
+import { HealthDbResponseDto, HealthResponseDto } from './dto/health-response.dto';
 
 @ApiTags('Health')
 @Controller('health')
@@ -11,7 +12,7 @@ export class HealthController {
   @Public()
   @Get()
   @ApiOperation({ summary: 'Basic health check' })
-  @ApiOkResponse({ description: 'Service is healthy' })
+  @ApiOkResponse({ type: HealthResponseDto, description: 'Service is healthy' })
   check(): Record<string, string> {
     return this.healthService.check();
   }
@@ -19,7 +20,8 @@ export class HealthController {
   @Public()
   @Get('db')
   @ApiOperation({ summary: 'Database connectivity health check' })
-  @ApiOkResponse({ description: 'Database connection is healthy' })
+  @ApiOkResponse({ type: HealthDbResponseDto, description: 'Database connection is healthy' })
+  @ApiServiceUnavailableResponse({ description: 'Database connection is unavailable' })
   async checkDb(): Promise<Record<string, string>> {
     return this.healthService.checkDb();
   }

@@ -28,7 +28,7 @@ function buildAppConfig(overrides?: Partial<AppConfig>): AppConfig {
     otp: { expiresMinutes: 5, maxAttempts: 3 },
     auth: {
       devExposeOtp: false,
-      allowedDomains: ['est.ups.edu.ec', 'ups.edu.ec'],
+      allowedDomains: ['est.ups.edu.ec', 'ups.edu.ec', 'gmail.com'],
       superAdminEmails: ['super@admin.com'],
     },
     cors: { origins: ['*'] },
@@ -153,7 +153,7 @@ describe('AuthService', () => {
   describe('requestCode', () => {
     it('should reject email from non-allowed domain', async () => {
       await expect(
-        service.requestCode({ email: 'user@gmail.com' }),
+        service.requestCode({ email: 'user@yahoo.com' }),
       ).rejects.toThrow(BadRequestException);
     });
 

@@ -7,7 +7,14 @@
         "parameters": [],
         "responses": {
           "200": {
-            "description": "Service is healthy"
+            "description": "Service is healthy",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponseDto"
+                }
+              }
+            }
           }
         },
         "summary": "Basic health check",
@@ -22,7 +29,17 @@
         "parameters": [],
         "responses": {
           "200": {
-            "description": "Database connection is healthy"
+            "description": "Database connection is healthy",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthDbResponseDto"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Database connection is unavailable"
           }
         },
         "summary": "Database connectivity health check",
@@ -47,13 +64,17 @@
         },
         "responses": {
           "201": {
-            "description": "Verification code sent"
+            "description": "Verification code sent",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RequestCodeResponseDto"
+                }
+              }
+            }
           },
           "400": {
-            "description": "Invalid email format"
-          },
-          "403": {
-            "description": "Email domain not allowed"
+            "description": "Invalid email format or email domain not allowed"
           },
           "429": {
             "description": "Too many requests. Try again later."
@@ -157,7 +178,14 @@
         },
         "responses": {
           "200": {
-            "description": "Logged out successfully"
+            "description": "Logged out successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LogoutResponseDto"
+                }
+              }
+            }
           },
           "400": {
             "description": "Invalid request body"
@@ -443,7 +471,14 @@
         },
         "responses": {
           "200": {
-            "description": "Stops ordered successfully"
+            "description": "Stops ordered successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderRouteStopsResponseDto"
+                }
+              }
+            }
           },
           "400": {
             "description": "Invalid input"
@@ -2022,10 +2057,6 @@
       "description": "Authentication and OTP verification"
     },
     {
-      "name": "Users",
-      "description": "User management"
-    },
-    {
       "name": "Mobile",
       "description": "Mobile read-only API for students"
     },
@@ -2064,12 +2095,8 @@
       "description": "Local development"
     },
     {
-      "url": "https://ups-api-sfq9.onrender.com",
-      "description": "Production (Render)"
-    },
-    {
-      "url": "https://staging-api.example.com",
-      "description": "Staging environment (placeholder)"
+      "url": "https://robust-strong-cattle.ngrok-free.app",
+      "description": "Public environment"
     }
   ],
   "components": {
@@ -2081,6 +2108,45 @@
       }
     },
     "schemas": {
+      "HealthResponseDto": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "ok"
+          },
+          "service": {
+            "type": "string",
+            "example": "UPS ExpresosApp API"
+          },
+          "timestamp": {
+            "type": "string",
+            "example": "2026-07-09T02:16:44.580Z"
+          }
+        },
+        "required": [
+          "status",
+          "service",
+          "timestamp"
+        ]
+      },
+      "HealthDbResponseDto": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "ok"
+          },
+          "database": {
+            "type": "string",
+            "example": "connected"
+          }
+        },
+        "required": [
+          "status",
+          "database"
+        ]
+      },
       "RequestCodeDto": {
         "type": "object",
         "properties": {
@@ -2092,6 +2158,23 @@
         },
         "required": [
           "email"
+        ]
+      },
+      "RequestCodeResponseDto": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Verification code sent"
+          },
+          "devCode": {
+            "type": "string",
+            "example": "123456",
+            "description": "Only exposed in development when configured."
+          }
+        },
+        "required": [
+          "message"
         ]
       },
       "VerifyCodeDto": {
@@ -2201,6 +2284,18 @@
             "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
           }
         }
+      },
+      "LogoutResponseDto": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Logged out"
+          }
+        },
+        "required": [
+          "message"
+        ]
       },
       "CreateRouteDto": {
         "type": "object",
@@ -2391,6 +2486,18 @@
         },
         "required": [
           "stops"
+        ]
+      },
+      "OrderRouteStopsResponseDto": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Stops ordered successfully"
+          }
+        },
+        "required": [
+          "message"
         ]
       },
       "CreateStopDto": {

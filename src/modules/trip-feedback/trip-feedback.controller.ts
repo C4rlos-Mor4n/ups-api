@@ -8,10 +8,9 @@ import { TripFeedbackService } from './trip-feedback.service';
 import { CreateTripFeedbackDto } from './dto/create-trip-feedback.dto';
 import { TripFeedbackResponseDto } from './dto/trip-feedback-response.dto';
 import { TripFeedbackPaginatedResponseDto } from './dto/trip-feedback-paginated-response.dto';
-import { TripFeedbackFiltersDto } from './dto/trip-feedback-filters.dto';
+import { TripFeedbackQueryDto } from './dto/trip-feedback-query.dto';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { JwtPayload } from '../../common/types/jwt-payload.type';
-import { PaginationDto } from '../../common/dto/pagination.dto';
 
 @ApiTags('Trip Feedback')
 @ApiBearerAuth()
@@ -43,13 +42,10 @@ export class TripFeedbackController {
     type: TripFeedbackPaginatedResponseDto,
   })
   @ApiUnauthorizedResponse({ description: 'Not authenticated' })
-  async findAll(
-    @Query() pagination: PaginationDto,
-    @Query() filters: TripFeedbackFiltersDto,
-  ): Promise<TripFeedbackPaginatedResponseDto> {
-    const page = pagination.page ?? 1;
-    const limit = pagination.limit ?? 20;
-    return this.tripFeedbackService.findAll(page, limit, filters.userId, filters.routeId);
+  async findAll(@Query() query: TripFeedbackQueryDto): Promise<TripFeedbackPaginatedResponseDto> {
+    const page = query.page ?? 1;
+    const limit = query.limit ?? 20;
+    return this.tripFeedbackService.findAll(page, limit, query.userId, query.routeId);
   }
 
   @Get(':id')
