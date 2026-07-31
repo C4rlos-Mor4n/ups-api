@@ -82,14 +82,24 @@ async function seedDemoData(): Promise<void> {
 
   const routeIds = new Map<string, string>();
   for (const route of catalog.routes) {
-    const existing = await prisma.route.findFirst({
+    const existingByCurrentName = await prisma.route.findFirst({
       where: { name: route.name, direction: route.direction },
     });
+    const existingByLegacyName = existingByCurrentName
+      ? null
+      : await prisma.route.findFirst({
+          where: {
+            name: { in: route.legacyNames ?? [] },
+            direction: route.direction,
+          },
+        });
+    const existing = existingByCurrentName ?? existingByLegacyName;
 
     const saved = existing
       ? await prisma.route.update({
           where: { id: existing.id },
           data: {
+            name: route.name,
             description: route.description,
             direction: route.direction,
             status: route.status,
@@ -111,11 +121,16 @@ async function seedDemoData(): Promise<void> {
 
   const stopIds = new Map<string, string>();
   for (const stop of catalog.stops) {
-    const existing = await prisma.stop.findFirst({ where: { name: stop.name } });
+    const existingByCurrentName = await prisma.stop.findFirst({ where: { name: stop.name } });
+    const existingByLegacyName = existingByCurrentName
+      ? null
+      : await prisma.stop.findFirst({ where: { name: { in: stop.legacyNames ?? [] } } });
+    const existing = existingByCurrentName ?? existingByLegacyName;
     const saved = existing
       ? await prisma.stop.update({
           where: { id: existing.id },
           data: {
+            name: stop.name,
             reference: stop.reference,
             latitude: stop.latitude,
             longitude: stop.longitude,
@@ -157,6 +172,27 @@ async function seedDemoData(): Promise<void> {
         stopOrder: routeStop.stopOrder,
         estimatedArrivalMinutes: routeStop.estimatedArrivalMinutes,
         notes: routeStop.notes,
+      },
+    });
+  }
+
+  const selectedStopIds = Array.from(stopIds.values());
+  const obsoleteDemoStopNames = catalog.stops.flatMap((stop) => [stop.name, ...(stop.legacyNames ?? [])]);
+
+  if (obsoleteDemoStopNames.length > 0) {
+    await prisma.stop.deleteMany({
+      where: {
+        id: { notIn: selectedStopIds },
+        name: { in: obsoleteDemoStopNames },
+        routeStops: { none: {} },
+      },
+    });
+  }
+
+  if (routeStopRouteIds.length > 0) {
+    await prisma.schedule.deleteMany({
+      where: {
+        routeId: { in: routeStopRouteIds },
       },
     });
   }
